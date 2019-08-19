@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wensheng.zcc.sso.dao.mysql.mapper.AmcWechatUserMapper">
+  <resultMap id="BaseResultMap" type="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="wechat_union_id" jdbcType="VARCHAR" property="wechatUnionId" />
+    <result column="wechat_openid" jdbcType="VARCHAR" property="wechatOpenid" />
+    <result column="phone_number" jdbcType="CHAR" property="phoneNumber" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="login_state" jdbcType="INTEGER" property="loginState" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, wechat_union_id, wechat_openid, phone_number, session_key, user_name, gender, 
+    location, login_state, update_date
+  </sql>
+  <select id="selectByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from AMC_WECHAT_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from AMC_WECHAT_USER
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from AMC_WECHAT_USER
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUserExample">
+    delete from AMC_WECHAT_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into AMC_WECHAT_USER (wechat_union_id, wechat_openid, phone_number, 
+      session_key, user_name, gender, 
+      location, login_state, update_date
+      )
+    values (#{wechatUnionId,jdbcType=VARCHAR}, #{wechatOpenid,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=CHAR}, 
+      #{sessionKey,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
+      #{location,jdbcType=VARCHAR}, #{loginState,jdbcType=INTEGER}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into AMC_WECHAT_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="wechatUnionId != null">
+        wechat_union_id,
+      </if>
+      <if test="wechatOpenid != null">
+        wechat_openid,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="sessionKey != null">
+        session_key,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="loginState != null">
+        login_state,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="wechatUnionId != null">
+        #{wechatUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatOpenid != null">
+        #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=CHAR},
+      </if>
+      <if test="sessionKey != null">
+        #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="loginState != null">
+        #{loginState,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUserExample" resultType="java.lang.Long">
+    select count(*) from AMC_WECHAT_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update AMC_WECHAT_USER
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.wechatUnionId != null">
+        wechat_union_id = #{record.wechatUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wechatOpenid != null">
+        wechat_openid = #{record.wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneNumber != null">
+        phone_number = #{record.phoneNumber,jdbcType=CHAR},
+      </if>
+      <if test="record.sessionKey != null">
+        session_key = #{record.sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gender != null">
+        gender = #{record.gender,jdbcType=VARCHAR},
+      </if>
+      <if test="record.location != null">
+        location = #{record.location,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginState != null">
+        login_state = #{record.loginState,jdbcType=INTEGER},
+      </if>
+      <if test="record.updateDate != null">
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update AMC_WECHAT_USER
+    set id = #{record.id,jdbcType=BIGINT},
+      wechat_union_id = #{record.wechatUnionId,jdbcType=VARCHAR},
+      wechat_openid = #{record.wechatOpenid,jdbcType=VARCHAR},
+      phone_number = #{record.phoneNumber,jdbcType=CHAR},
+      session_key = #{record.sessionKey,jdbcType=VARCHAR},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      gender = #{record.gender,jdbcType=VARCHAR},
+      location = #{record.location,jdbcType=VARCHAR},
+      login_state = #{record.loginState,jdbcType=INTEGER},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUser">
+    update AMC_WECHAT_USER
+    <set>
+      <if test="wechatUnionId != null">
+        wechat_union_id = #{wechatUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatOpenid != null">
+        wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=CHAR},
+      </if>
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="loginState != null">
+        login_state = #{loginState,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUser">
+    update AMC_WECHAT_USER
+    set wechat_union_id = #{wechatUnionId,jdbcType=VARCHAR},
+      wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=CHAR},
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      login_state = #{loginState,jdbcType=INTEGER},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcWechatUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from AMC_WECHAT_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>
