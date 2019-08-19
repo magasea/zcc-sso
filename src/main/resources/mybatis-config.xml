@@ -10,7 +10,7 @@
     </settings>
 
     <typeAliases>
-        <package name="com.wensheng.zcc.sso.module.dao.mysql.auto.entity" />
+        <package name="com.wensheng.sso.module.dao.mysql.auto.entity" />
     </typeAliases>
 
     <environments default="development">
@@ -20,7 +20,7 @@
             </transactionManager>
             <dataSource type="UNPOOLED">
                 <property name="driver" value="com.mysql.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://localhost:3306/ZCC_AMC" />
+                <property name="url" value="jdbc:mysql://localhost:3306/WS_SSO" />
                 <property name="username" value="root" />
                 <property name="password" value="wensheng" />
             </dataSource>
@@ -30,7 +30,7 @@
     <mappers>
         <!--<mapper resource="mappers/*.xml" />-->
         <!--<mapper resource="mappers/ext/*.xml" />-->
-        <package name="com.wensheng.zcc.sso.dao.mysql.mapper" />
+        <package name="com.wensheng.sso.dao.mysql.mapper" />
 
     </mappers>
 </configuration>

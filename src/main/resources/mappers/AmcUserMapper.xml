@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wensheng.zcc.sso.dao.mysql.mapper.AmcUserMapper">
-  <resultMap id="BaseResultMap" type="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser">
+<mapper namespace="com.wensheng.sso.dao.mysql.mapper.AmcUserMapper">
+  <resultMap id="BaseResultMap" type="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
@@ -80,7 +80,7 @@
     id, user_name, password, mobile_phone, email, dept_id, company_id, location, valid, 
     title, nick_name, create_by, create_date, update_by, update_date
   </sql>
-  <select id="selectByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -105,13 +105,13 @@
     delete from AMC_USER
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserExample">
+  <delete id="deleteByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample">
     delete from AMC_USER
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser">
+  <insert id="insert" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -126,7 +126,7 @@
       #{nickName,jdbcType=CHAR}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser">
+  <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -220,7 +220,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultType="java.lang.Long">
     select count(*) from AMC_USER
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -300,7 +300,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser">
+  <update id="updateByPrimaryKeySelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     update AMC_USER
     <set>
       <if test="userName != null">
@@ -348,7 +348,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser">
+  <update id="updateByPrimaryKey" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     update AMC_USER
     set user_name = #{userName,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
@@ -366,7 +366,7 @@
       update_date = #{updateDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
+  <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct

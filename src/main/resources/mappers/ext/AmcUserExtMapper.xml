@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wensheng.zcc.sso.dao.mysql.mapper.ext.AmcUserExtMapper">
-  <resultMap id="BaseExtResultMap" type="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.ext.AmcUserExt">
+<mapper namespace="com.wensheng.sso.dao.mysql.mapper.ext.AmcUserExtMapper">
+  <resultMap id="BaseExtResultMap" type="com.wensheng.sso.module.dao.mysql.auto.entity.ext.AmcUserExt">
     <id column="id" jdbcType="BIGINT" property="id" />
     <association property="amcUser"
-      resultMap="com.wensheng.zcc.sso.dao.mysql.mapper.AmcUserMapper.BaseResultMap" />
-    <collection property="amcRoles" resultMap="com.wensheng.zcc.sso.dao.mysql.mapper.AmcRoleMapper.BaseResultMap"
+      resultMap="com.wensheng.sso.dao.mysql.mapper.AmcUserMapper.BaseResultMap" />
+    <collection property="amcRoles" resultMap="com.wensheng.sso.dao.mysql.mapper.AmcRoleMapper.BaseResultMap"
       columnPrefix="role_"/>
     <collection property="amcPermissions"
-      resultMap="com.wensheng.zcc.sso.dao.mysql.mapper.AmcPermissionMapper.BaseResultMap" columnPrefix="perm_"/>
+      resultMap="com.wensheng.sso.dao.mysql.mapper.AmcPermissionMapper.BaseResultMap" columnPrefix="perm_"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

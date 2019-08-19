@@ -7,7 +7,7 @@ spring:
             - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
     datasource:
         password: ${env.dbpasswd}
-        url: jdbc:mysql://${env.dbhost}:3306/ZCC_SSO?useUnicode=true&characterEncoding=utf-8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
+        url: jdbc:mysql://${env.dbhost}:3306/WS_SSO?useUnicode=true&characterEncoding=utf-8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
         username: ${env.dbusername}
         driverClassName: com.mysql.cj.jdbc.Driver
         filters: stat
@@ -74,7 +74,7 @@ spring:
         caffeine:
             spec: maximumSize=500, expireAfterAccess=120s
 mybatis:
-    type-aliases-package: com.wensheng.zcc.sso.module
+    type-aliases-package: com.wensheng.sso.module
     mapper-locations:
         - classpath:mappers/*Mapper.xml
         - classpath:mappers/ext/*Mapper.xml

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wensheng.zcc.sso.dao.mysql.mapper.AmcUserRoleMapper">
-  <resultMap id="BaseResultMap" type="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRole">
+<mapper namespace="com.wensheng.sso.dao.mysql.mapper.AmcUserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
@@ -71,7 +71,7 @@
   <sql id="Base_Column_List">
     id, user_id, role_id, create_date, create_by, update_date, update_by
   </sql>
-  <select id="selectByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -96,13 +96,13 @@
     delete from AMC_USER_ROLE
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRoleExample">
+  <delete id="deleteByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample">
     delete from AMC_USER_ROLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRole">
+  <insert id="insert" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -113,7 +113,7 @@
       #{createBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRole">
+  <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -159,7 +159,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultType="java.lang.Long">
     select count(*) from AMC_USER_ROLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -207,7 +207,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRole">
+  <update id="updateByPrimaryKeySelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole">
     update AMC_USER_ROLE
     <set>
       <if test="userId != null">
@@ -231,7 +231,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRole">
+  <update id="updateByPrimaryKey" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole">
     update AMC_USER_ROLE
     set user_id = #{userId,jdbcType=BIGINT},
       role_id = #{roleId,jdbcType=BIGINT},
@@ -241,7 +241,7 @@
       update_by = #{updateBy,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultMap="BaseResultMap">
+  <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
