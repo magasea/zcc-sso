@@ -4,7 +4,7 @@
 2. 各个应用子系统有自己的用户权限角色
 
 
-## 思路
+## 操作流程
  1. 登录的用户中心称为General SSO
  2. 各个应用平台的子系统视情况构建自己的SSO， 如果是单进程则只需构建自己的UserDetailService
  3. 登录General SSO 获得用户的基本信息(user global id 等)
@@ -15,7 +15,7 @@
 	最后：子系统将子系统的user authentication 更新在自己的spring security context里面
 
 
-## 操作
+## 技术细节
 前面第5步用 spring 里面的Filter 可以用来做这偷天换日的操作。
 
 
@@ -27,7 +27,7 @@
 3. 邮箱 email
 4. 登录密码 password
 5. 别名 alias
-6. 用户状态 - locked, unlocked
+6. 用户状态 - valid locked, unlocked, ...
 
 #### 用户公司属性
 1. 部门 dept -- dept 部门编码 id
