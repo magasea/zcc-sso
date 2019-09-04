@@ -2,6 +2,8 @@ package com.wensheng.sso.controller;
 
 import com.wensheng.sso.aop.AmcUserCreateChecker;
 import com.wensheng.sso.aop.AmcUserModifyChecker;
+import com.wensheng.sso.service.AmcEMailService;
+import com.wensheng.sso.service.impl.AmcEmailServiceImpl;
 import com.wensheng.sso.utils.AmcBeanUtils;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
@@ -66,6 +68,9 @@ public class AmcUserController {
   @Value("${spring.security.oauth2.client.registration.amc-admin.client-id}")
   private String amcAdminClientId;
 
+  @Autowired
+  AmcEMailService amcEmailService;
+
 
   @PreAuthorize("hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser')")
   @RequestMapping(value = "/amcid/{amcid}/amc-user/create", method = RequestMethod.POST)
@@ -92,7 +97,7 @@ public class AmcUserController {
   @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/create_amc_user", method = RequestMethod.POST)
   @ResponseBody
-  public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId){
+  public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
 
     amcUser.setCompanyId(amcId);
     AmcUser amcUserResult = amcUserService.createAmcUser(amcUser);
@@ -306,6 +311,13 @@ public class AmcUserController {
     return amcSsoService.getUserDetailByUserId(userId);
   }
 
+
+  @RequestMapping(value = "/sso/passwdReset", method = RequestMethod.POST)
+  @ResponseBody
+  public void passwdReset(@RequestParam("email") String email) throws Exception {
+
+     amcEmailService.confirmReset(email);
+  }
   @Data
   class AmcBasicUser{
     Long id;

@@ -5,6 +5,8 @@ import java.util.Date;
 public class AmcRolePermission {
     private Long id;
 
+    private Integer deptId;
+
     private Long roleId;
 
     private Long permissionId;
@@ -19,6 +21,14 @@ public class AmcRolePermission {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
     }
 
     public Long getRoleId() {

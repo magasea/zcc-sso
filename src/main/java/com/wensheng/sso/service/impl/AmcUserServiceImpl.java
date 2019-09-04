@@ -13,10 +13,12 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
-import com.wensheng.sso.module.helper.AmcRolesEnum;
+import com.wensheng.sso.module.helper.AmcSSORolesEnum;
+import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
 import com.wensheng.sso.service.AmcUserService;
 import com.wensheng.sso.service.util.UserUtils;
+import com.wensheng.sso.utils.AmcTitleRoleUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -118,13 +120,13 @@ public class AmcUserServiceImpl implements AmcUserService {
 
   @Override
   public AmcUser createAmcAdmin(AmcUser amcUser) {
-    AmcUser amcUserCreated = createUserAndRole(amcUser, AmcRolesEnum.ROLE_AMC_ADMIN);
-    return amcUserCreated;
+    return null;
   }
 
+
   @Override
-  public AmcUser createAmcUser(AmcUser amcUser) {
-    AmcUser amcUserCreated = createUserAndRole(amcUser, AmcRolesEnum.ROLE_AMC_USER);
+  public AmcUser createAmcUser(AmcUser amcUser) throws Exception {
+    AmcUser amcUserCreated = createUserAndRole(amcUser);
     return amcUserCreated;
   }
 
@@ -279,11 +281,13 @@ public class AmcUserServiceImpl implements AmcUserService {
     return amcUsers;
   }
 
-  private AmcUser createUserAndRole(AmcUser amcUser, AmcRolesEnum amcRolesEnum){
+  private AmcUser createUserAndRole(AmcUser amcUser) throws Exception {
     amcUser.setPassword(UserUtils.getEncode(amcUser.getPassword()));
     amcUserMapper.insertSelective(amcUser);
     List<Long> roleIds = new ArrayList<>();
-    roleIds.add(Long.valueOf(amcRolesEnum.getId()));
+    AmcSSORolesEnum amcSSORolesEnum =
+        AmcTitleRoleUtil.getRoleByTitle(AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle()));
+    roleIds.add(Long.valueOf(amcSSORolesEnum.getId()));
     addRolesForUser(amcUser.getId(), roleIds);
     return amcUser;
   }

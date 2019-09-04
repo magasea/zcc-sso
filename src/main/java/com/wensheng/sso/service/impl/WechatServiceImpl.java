@@ -7,7 +7,7 @@ import com.wensheng.sso.module.common.WechatUserLocation;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUserExample;
 import com.wensheng.sso.module.helper.AmcPermEnum;
-import com.wensheng.sso.module.helper.AmcRolesEnum;
+import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.vo.WechatCode2SessionVo;
 import com.wensheng.sso.module.vo.WechatLoginResult;
 import com.wensheng.sso.module.vo.WechatPhoneRegistry;
@@ -297,9 +297,8 @@ public class WechatServiceImpl implements WechatService {
     }
     Set<String> scopesSet = scopes.stream().collect(Collectors.toSet());
     List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(AmcRolesEnum.ROLE_ZCC_CLIENT.name()));
+    authorities.add(new SimpleGrantedAuthority(AmcSSORolesEnum.ROLE_SSO_WECHATCLIENT.name()));
 
-    authorities.add(new SimpleGrantedAuthority(AmcPermEnum.PERM_AMC_VIEW.name()));
 
 
     OAuth2Request authorizationRequest = new OAuth2Request(authorizationParameters, amcWechatClientId, authorities,true, scopesSet, null,

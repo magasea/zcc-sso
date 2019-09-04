@@ -625,6 +625,66 @@ public class AmcUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andLgroupIsNull() {
+            addCriterion("lgroup is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupIsNotNull() {
+            addCriterion("lgroup is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupEqualTo(Integer value) {
+            addCriterion("lgroup =", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupNotEqualTo(Integer value) {
+            addCriterion("lgroup <>", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupGreaterThan(Integer value) {
+            addCriterion("lgroup >", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupGreaterThanOrEqualTo(Integer value) {
+            addCriterion("lgroup >=", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupLessThan(Integer value) {
+            addCriterion("lgroup <", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupLessThanOrEqualTo(Integer value) {
+            addCriterion("lgroup <=", value, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupIn(List<Integer> values) {
+            addCriterion("lgroup in", values, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupNotIn(List<Integer> values) {
+            addCriterion("lgroup not in", values, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupBetween(Integer value1, Integer value2) {
+            addCriterion("lgroup between", value1, value2, "lgroup");
+            return (Criteria) this;
+        }
+
+        public Criteria andLgroupNotBetween(Integer value1, Integer value2) {
+            addCriterion("lgroup not between", value1, value2, "lgroup");
+            return (Criteria) this;
+        }
+
         public Criteria andValidIsNull() {
             addCriterion("valid is null");
             return (Criteria) this;

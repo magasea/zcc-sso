@@ -19,6 +19,8 @@ public class AmcUser {
 
     private Integer location;
 
+    private Integer lgroup;
+
     private Integer valid;
 
     private Integer title;
@@ -95,6 +97,14 @@ public class AmcUser {
 
     public void setLocation(Integer location) {
         this.location = location;
+    }
+
+    public Integer getLgroup() {
+        return lgroup;
+    }
+
+    public void setLgroup(Integer lgroup) {
+        this.lgroup = lgroup;
     }
 
     public Integer getValid() {

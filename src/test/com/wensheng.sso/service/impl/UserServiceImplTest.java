@@ -1,11 +1,9 @@
-package com.wensheng.zcc.sso.service.impl;
+package com.wensheng.sso.service.impl;
 
-import static org.junit.Assert.*;
 
-import com.wensheng.zcc.sso.module.dao.mysql.auto.entity.AmcUser;
-import com.wensheng.zcc.sso.service.UserService;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
+import com.wensheng.sso.service.UserService;
 import java.util.List;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

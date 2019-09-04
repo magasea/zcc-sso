@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.Locale;
 
@@ -67,6 +69,11 @@ public class AmcDateUtils {
 
   public static Date getDateMonthsDiff(int months){
     Date date = Date.from(ZonedDateTime.now().minusMonths(months).toInstant());
+    return date;
+  }
+
+  public static Date getDateSecondsDiff(int seconds){
+    Date date = Date.from(ZonedDateTime.now().plus(seconds, ChronoUnit.SECONDS).toInstant());
     return date;
   }
 

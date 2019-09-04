@@ -9,6 +9,8 @@ public class AmcDept {
 
     private String description;
 
+    private String cname;
+
     public Long getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class AmcDept {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public String getCname() {
+        return cname;
+    }
+
+    public void setCname(String cname) {
+        this.cname = cname == null ? null : cname.trim();
     }
 }

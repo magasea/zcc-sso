@@ -6,6 +6,7 @@
     <result column="cmpy_id" jdbcType="BIGINT" property="cmpyId" />
     <result column="name" jdbcType="CHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="cname" jdbcType="CHAR" property="cname" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, cmpy_id, name, description
+    id, cmpy_id, name, description, cname
   </sql>
   <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcDeptExample" resultMap="BaseResultMap">
     select
@@ -103,10 +104,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into AMC_DEPT (cmpy_id, name, description
-      )
-    values (#{cmpyId,jdbcType=BIGINT}, #{name,jdbcType=CHAR}, #{description,jdbcType=VARCHAR}
-      )
+    insert into AMC_DEPT (cmpy_id, name, description, 
+      cname)
+    values (#{cmpyId,jdbcType=BIGINT}, #{name,jdbcType=CHAR}, #{description,jdbcType=VARCHAR}, 
+      #{cname,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcDept">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -123,6 +124,9 @@
       <if test="description != null">
         description,
       </if>
+      <if test="cname != null">
+        cname,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="cmpyId != null">
@@ -133,6 +137,9 @@
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null">
+        #{cname,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -157,6 +164,9 @@
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
+      <if test="record.cname != null">
+        cname = #{record.cname,jdbcType=CHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -167,7 +177,8 @@
     set id = #{record.id,jdbcType=BIGINT},
       cmpy_id = #{record.cmpyId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=CHAR},
-      description = #{record.description,jdbcType=VARCHAR}
+      description = #{record.description,jdbcType=VARCHAR},
+      cname = #{record.cname,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -184,6 +195,9 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
+      <if test="cname != null">
+        cname = #{cname,jdbcType=CHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -191,7 +205,8 @@
     update AMC_DEPT
     set cmpy_id = #{cmpyId,jdbcType=BIGINT},
       name = #{name,jdbcType=CHAR},
-      description = #{description,jdbcType=VARCHAR}
+      description = #{description,jdbcType=VARCHAR},
+      cname = #{cname,jdbcType=CHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcDeptExample" resultMap="BaseResultMap">

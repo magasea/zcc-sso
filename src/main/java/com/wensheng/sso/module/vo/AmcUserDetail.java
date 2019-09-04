@@ -18,6 +18,7 @@ public class AmcUserDetail extends User {
 
   private String userName;
 
+  private String password;
 
   private String mobilePhone;
 
@@ -54,4 +55,7 @@ public class AmcUserDetail extends User {
       Collection<GrantedAuthority> authorities) {
     super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
   }
+
+
+
 }

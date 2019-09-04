@@ -1,13 +1,14 @@
-package com.wensheng.zcc.sso.config;
+package com.wensheng.sso.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-import com.wensheng.zcc.sso.module.vo.LoginVo;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,5 +67,14 @@ public class BasicConfigurationIntegrationTest {
     assertTrue(response
         .getBody()
         .contains("Unauthorized"));
+  }
+
+  @Data
+  public class LoginVo {
+    String userName;
+    String phoneNum;
+    String password;
+    String verfCode;
+
   }
 }

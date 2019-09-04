@@ -73,6 +73,15 @@ spring:
         cache-names: TOKEN,USER
         caffeine:
             spec: maximumSize=500, expireAfterAccess=120s
+    mail:
+        host: smtp.mxhichina.com
+        port: 25
+        username: chenwei@wenshengamc.com
+        password: Wenhua12345
+        default-encoding: UTF-8
+
+
+
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:

@@ -5,7 +5,7 @@ import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
-import com.wensheng.sso.module.helper.AmcRolesEnum;
+import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.vo.AmcUserDetail;
 import com.wensheng.sso.service.AmcUserService;
 import java.util.List;
@@ -52,7 +52,7 @@ public class AmcAspect {
     AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
 
     if(amcUserDetail.getId() != null && 0 < amcUserDetail.getId() && authentication.getAuthorities().contains(
-        AmcRolesEnum.ROLE_AMC_USER.getName())){
+        AmcSSORolesEnum.ROLE_SSO_LDR.getName())){
 //      AmcUser currUser = amcUserService.getUserById(amcUserDetail.getId());
       amcUser.setLocation(amcUserDetail.getLocation());
       amcUser.setDeptId(amcUserDetail.getDeptId());
@@ -70,7 +70,7 @@ public class AmcAspect {
     AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
 
     if(amcUserDetail.getId() != null && 0 < amcUserDetail.getId() && authentication.getAuthorities().contains(
-        AmcRolesEnum.ROLE_AMC_ADMIN.getName())){
+        AmcSSORolesEnum.ROLE_SSO_LDR.getName())){
       log.info("It is amc_admin query, so only local users can be selected");
       amcUserExample.createCriteria().andDeptIdEqualTo(amcUserDetail.getDeptId()).andLocationEqualTo(amcUserDetail.getLocation());
 
@@ -102,7 +102,7 @@ public class AmcAspect {
 //        authentication.getAuthorities().stream().map(item -> ((GrantedAuthority) item).getAuthority()).collect(
 //            Collectors.toSet());
     AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
-    if(roleIds.contains(Long.valueOf(AmcRolesEnum.ROLE_SYSTEM_ADMIN.getId()))){
+    if(roleIds.contains(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_SYS_ADM.getId()))){
       throw ExceptionUtils.getAmcException(AmcExceptions.INVALID_USER_OPERATION,"修改系统管理员的用户属性请联系开发技术部");
     }
     if(amcUserDetail.getId() != null && 0 < amcUserDetail.getId() ){
@@ -113,7 +113,7 @@ public class AmcAspect {
       }
       boolean isSysAdmin = false;
       for(AmcUserRole amcUserRole: currUserRoleList){
-        if(amcUserRole.getRoleId() == AmcRolesEnum.ROLE_SYSTEM_ADMIN.getId()){
+        if(amcUserRole.getRoleId() == AmcSSORolesEnum.ROLE_SSO_SYS_ADM.getId()){
           isSysAdmin = true;
         }
         if(roleIds.contains(amcUserRole.getRoleId())){

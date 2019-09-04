@@ -25,7 +25,7 @@ public interface AmcUserService {
 
   AmcUser createAmcAdmin(AmcUser amcUser);
 
-  AmcUser createAmcUser(AmcUser amcUser);
+  AmcUser createAmcUser(AmcUser amcUser) throws Exception;
 
   void delUser(Long userId);
 
