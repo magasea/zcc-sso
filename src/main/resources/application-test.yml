@@ -1,5 +1,5 @@
 server:
-    port: 10002
+    port: 11002
 spring:
     autoconfigure:
         exclude:
@@ -39,28 +39,35 @@ spring:
             client:
                 registration:
                     sample:
+                        provider: google
                         client-id: sampleClientId
                         authorizedGrantTypes: implicit
                         scops: read,write
                         accessTokenValiditySeconds: 3600
                     amc-client-thirdpart:
+                        provider: google
                         client-id: amcClient3rdPartId
                         secret: secret
                         scopes: thirdpart, read
                         authorizedGrantTypes: implicit, refresh_token, client_credentials
                         redirectUris: admin,http://${env.oauth2.host}:10003/amc/login, http://${env.oauth2.host}:8080/login/oauth2/code/custom, http://${env.oauth2.host}:8080/ui-thymeleaf/login/oauth2/code/custom, http://${env.oauth2.host}:8080/authorize/oauth2/code/bael, http://${env.oauth2.host}:8080/login/oauth2/code/bael
                     amc-admin:
+                        provider: google
                         client-id: amcAdminId
                         secret: secret
                         scopes: amcAdmin,amcClient,read,write
                         authorizedGrantTypes: password, authorization_code, refresh_token, client_credentials
                         redirectUris: admin,http://${env.oauth2.host}:10003/amc/login, http://${env.oauth2.host}:8080/login/oauth2/code/custom, http://${env.oauth2.host}:8080/ui-thymeleaf/login/oauth2/code/custom, http://${env.oauth2.host}:8080/authorize/oauth2/code/bael, http://${env.oauth2.host}:8080/login/oauth2/code/bael
                     amc-client:
+                        provider: google
                         client-id: amcClientId
                         secret: secret
                         scopes: amcClient,read,write
                         redirectUris: client,http://${env.oauth2.host}:10003/amc/login
                         authorizedGrantTypes: password, authorization_code, refresh_token, client_credentials
+                provider:
+                    my-oauth-provider:
+                        token-uri: http://${env.oauth2.host}/oauth/token
 
     kafka:
         consumer:
@@ -73,6 +80,14 @@ spring:
         cache-names: TOKEN,USER
         caffeine:
             spec: maximumSize=500, expireAfterAccess=120s
+
+
+    mail:
+        host: smtp.mxhichina.com
+        port: 25
+        username: chenwei@wenshengamc.com
+        password: Wenhua12345
+        default-encoding: UTF-8
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:
@@ -129,4 +144,4 @@ env:
     mongodb-host: 10.20.100.235
     oauth2:
         host: 10.20.100.235
-        authLink: http://${env.oauth2.host}:10002
+        authLink: http://${env.oauth2.host}:11002

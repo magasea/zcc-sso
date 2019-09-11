@@ -51,6 +51,7 @@
     ${prefix}valid as valid,
     ${prefix}title as title,
     ${prefix}nick_name as nick_name,
+    ${prefix}lgroup as lgroup,
     ${prefix}location as location,
     ${prefix}create_by as create_by,
     ${prefix}create_date as create_date,
@@ -78,7 +79,7 @@
     from AMC_USER au
     left join AMC_USER_ROLE aur on au.id = aur.user_id
     left join AMC_ROLE ar on aur.role_id = ar.id
-    left join AMC_ROLE_PERMISSION arp on arp.role_id = aur.role_id
+    left join AMC_ROLE_PERMISSION arp on arp.role_id = aur.role_id and arp.dept_id = au.dept_id
     left join AMC_PERMISSION ap on arp.permission_id = ap.id
     where au.id = #{id}
   </select>

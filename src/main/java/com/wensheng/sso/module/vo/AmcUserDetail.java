@@ -30,6 +30,8 @@ public class AmcUserDetail extends User {
 
   private Integer location;
 
+  private Integer lgroup;
+
   private Integer valid;
 
   private Integer title;

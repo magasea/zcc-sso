@@ -49,6 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
+    MyWebResponseExceptionTranslator myWebResponseExceptionTranslator;
+
+    @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
@@ -105,6 +108,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+
     }
 
     @Override
@@ -114,10 +118,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 .and().withClient("testImplicitClientId").authorizedGrantTypes("implicit").scopes("read", "write", "foo", "bar").autoApprove(true).redirectUris("xxx")
 //            .and().withClient(amcWechatClientId).authorizedGrantTypes(amcWechatAuthorizedGrantTypes.replace(" ","").split(",")).scopes(amcWechatScopes.replace(" ", "").split(",")).autoApprove(true).redirectUris(amcWechatRedirectUris.split(","))
                 .and().withClient(amcAdminClientId).secret(passwordEncoder.encode(amcAdminSecret))
+            .and().withClient(amcWechatClientId).secret(passwordEncoder.encode(amcWechatSecret)).scopes(amcWechatScopes.replace(" ", "").split(",")).authorizedGrantTypes(amcWechatAuthorizedGrantTypes)
             .authorizedGrantTypes(amcAdminAuthorizedGrantTypes.replace(" ","").split(",")).scopes(amcAdminScopes.replace(" ","").split(
                 ","))
             .autoApprove(false).redirectUris(amcAdminRedirectUris.split(","))
             .accessTokenValiditySeconds(accessTokenValidSeconds).refreshTokenValiditySeconds(refreshTokenValidSeconds)
+
         ;
 
     }
@@ -156,7 +162,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
         endpoints.tokenServices(tokenServices()).tokenEnhancer(tokenEnhancerChain).authenticationManager(authenticationManager);
 //        endpoints.pathMapping("oauth/token", "oauth/token");
-
+        endpoints.exceptionTranslator(myWebResponseExceptionTranslator);
     }
 
     @Bean

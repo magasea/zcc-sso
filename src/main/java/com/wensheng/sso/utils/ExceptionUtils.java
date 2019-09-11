@@ -55,6 +55,8 @@ public class ExceptionUtils {
     INVALID_WECHAT_PARAMETER(1031, "Invalid Wechat Parameter", "非法的微信参数"),
 
     INVALID_USER_OPERATION(1032, "Invalid user operation", "不合规的用户操作"),
+
+    NO_SUCHAMCAPP(1033, "No such amc app", "目前系统中没有该应用模块"),
     ;
     int code;
     String name;

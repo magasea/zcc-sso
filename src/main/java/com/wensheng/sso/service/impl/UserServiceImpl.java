@@ -6,6 +6,9 @@ import com.wensheng.sso.dao.mysql.mapper.AmcRolePermissionMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserRoleMapper;
 import com.wensheng.sso.dao.mysql.mapper.ext.AmcUserExtMapper;
+import com.wensheng.sso.module.helper.AmcAPPEnum;
+import com.wensheng.sso.module.helper.AmcPermEnum;
+import com.wensheng.sso.utils.AmcAppPermCheckUtil;
 import com.wensheng.sso.utils.AmcBeanUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcPermission;
@@ -24,12 +27,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -38,6 +45,7 @@ import org.springframework.util.CollectionUtils;
  * @project zcc-backend
  */
 @Service("userService")
+@Slf4j
 public class UserServiceImpl implements UserService {
 
   @Autowired
@@ -79,16 +87,39 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+    AmcAPPEnum amcAPPEnum = null;
+    AmcPermEnum amcPermEnum = null;
+    String[] userInfos = null;
+    if(!phoneNumber.contains(":")){
+      log.error("Should contain amcAppInfo");
+    }else {
+      userInfos = phoneNumber.split(":");
+      amcAPPEnum =  AmcAPPEnum.lookupByDisplayIdUtil(Integer.valueOf(userInfos[1]));
+      if( null == amcAPPEnum){
+        throw new PreAuthenticatedCredentialsNotFoundException(String.format("No such app with id:%s", userInfos[1]));
+      }
+    }
     AmcUserExample amcUserExample = new AmcUserExample();
-    amcUserExample.createCriteria().andMobilePhoneEqualTo(phoneNumber);
+    amcUserExample.createCriteria().andMobilePhoneEqualTo(userInfos[0]);
     List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
     if(CollectionUtils.isEmpty(amcUsers)){
       throw new UsernameNotFoundException(AmcExceptions.NO_SUCHUSER.toString());
     }
+
     List<String> authorities = getPermissions(amcUsers.get(0));
 
     List<GrantedAuthority> grantedAuthorityAuthorities = new ArrayList<>();
     authorities.forEach( auth -> grantedAuthorityAuthorities.add(new SimpleGrantedAuthority(auth)));
+    try {
+      boolean hasPermOnApp = AmcAppPermCheckUtil.checkPermApp(grantedAuthorityAuthorities, amcAPPEnum);
+      if(!hasPermOnApp){
+        throw new AuthenticationServiceException(String.format("user:%s cannot access the app:%s", amcUsers.get(0).getId(),
+            amcAPPEnum.getCname() ));
+      }
+    } catch (Exception e) {
+      log.error("user cannot access the app ", e);
+      throw new AuthenticationServiceException(String.format("%s", e.getMessage()));
+    }
     boolean userEnabled = amcUsers.get(0).getValid().equals(AmcUserValidEnum.VALID.getId());
     AmcUserDetail amcUserDetail = new AmcUserDetail(amcUsers.get(0).getMobilePhone(),"",userEnabled, userEnabled,userEnabled,
         userEnabled,grantedAuthorityAuthorities);
@@ -99,6 +130,8 @@ public class UserServiceImpl implements UserService {
 //        AmcUserValidEnum.VALID.getId())).build();
     return amcUserDetail;
   }
+
+
   @Override
   public List<String> getPermissions(AmcUser amcUser){
 

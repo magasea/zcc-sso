@@ -46,4 +46,9 @@ public enum AmcDeptEnum {
 
   public Integer getId() {
     return id;
-  }}
+  }
+
+  public String getCname() {
+    return cname;
+  }
+}

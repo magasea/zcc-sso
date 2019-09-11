@@ -4,8 +4,8 @@ export JAVA_HOME=/home/chenwei/workingTools/jdk-10.0.2
 export PATH=${JAVA_HOME}/bin:${PATH}
 export LANG=en_US.utf8
 export JAVA_OPTS="-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8"
-execJarName_sso=/home/chenwei/working/zcc/zcc-sso-0.1-SNAPSHOT.jar
-pattern_sso=sso
+execJarName_sso=/home/chenwei/working/sso/amc-sso-0.1-SNAPSHOT.jar
+pattern_sso=amc-sso
 
 killProcess() {
     echo "$1"

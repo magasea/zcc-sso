@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -26,9 +28,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource(name = "userService")
     UserService userService;
 
+  @Autowired
+  CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-
-
+  @Autowired
+  CustomEntryPoint customEntryPoint;
 
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -71,7 +75,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-		http.authorizeRequests().antMatchers("/login").permitAll()
+		http
+
+        .authorizeRequests().antMatchers("/login").permitAll()
         .antMatchers("/oauth/token/revokeById/**").permitAll()
     .antMatchers("/oauth/token/revokeByUserName/**").permitAll()
 		.antMatchers("/tokens/**").permitAll()
@@ -79,7 +85,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     .antMatchers("/wechat/**").permitAll()
     .anyRequest().authenticated()
 		.and().formLogin().permitAll()
-		.and().csrf().disable();
+		.and().csrf().disable()
+
+     ;
+
+    ;
 		// @formatter:on
     }
 
