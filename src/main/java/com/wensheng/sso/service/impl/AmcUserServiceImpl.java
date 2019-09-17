@@ -11,32 +11,39 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample.Criteria;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
 import com.wensheng.sso.service.AmcUserService;
+import com.wensheng.sso.service.util.QueryParam;
 import com.wensheng.sso.service.util.UserUtils;
 import com.wensheng.sso.utils.AmcTitleRoleUtil;
+import com.wensheng.sso.utils.SQLUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author chenwei on 3/14/19
@@ -62,7 +69,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   @Autowired
   AmcPermissionMapper amcPermissionMapper;
 
-  @Resource(name = "tokenServices")
+  @Resource(name = "ssoTokenServices")
   private ConsumerTokenServices tokenServices;
 
   @Resource(name = "tokenStore")
@@ -279,6 +286,28 @@ public class AmcUserServiceImpl implements AmcUserService {
     List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
 
     return amcUsers;
+  }
+
+  @Override
+  public List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam) {
+    AmcUserExample amcUserExample = SQLUtils.getAmcUserExample(queryParam);
+    RowBounds rowBounds = new RowBounds(offset, size);
+    try{
+
+      amcUserExample.setOrderByClause(SQLUtils.getOrderBy(orderByParam, rowBounds));
+    }catch (Exception ex){
+      log.error("set order by exception:", ex);
+    }
+    List<AmcUser> amcUsers = amcUserMapper.selectByExampleWithRowbounds(amcUserExample, rowBounds);
+    amcUsers.forEach(item -> item.setPassword(""));
+
+    return amcUsers;
+  }
+
+  @Override
+  public Long queryUserCount(QueryParam queryParam) {
+    AmcUserExample amcUserExample = SQLUtils.getAmcUserExample(queryParam);
+    return amcUserMapper.countByExample(amcUserExample);
   }
 
   private AmcUser createUserAndRole(AmcUser amcUser) throws Exception {

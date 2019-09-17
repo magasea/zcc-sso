@@ -1,6 +1,7 @@
 package com.wensheng.sso.controller;
 
 import com.wensheng.sso.module.helper.AmcAPPEnum;
+import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
 import com.wensheng.sso.module.helper.AmcLocationEnum;
 import com.wensheng.sso.module.helper.AmcPermEnum;
@@ -143,4 +144,16 @@ public class AmcBasicInfoController {
     return result;
   }
 
+
+  @RequestMapping(value = "/amcCompanies", method = RequestMethod.POST)
+  @ResponseBody
+  public List<String> getAmcCompanies(){
+
+    List<String> result = new ArrayList<>();
+    for(AmcCmpyEnum amcCmpyEnum : AmcCmpyEnum.values()){
+      result.add(String.format("%d:%s:%s", amcCmpyEnum.getId(), amcCmpyEnum.getName(), amcCmpyEnum.getCname()
+      ));
+    }
+    return result;
+  }
 }

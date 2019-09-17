@@ -1,4 +1,4 @@
-package com.wensheng.sso.params;
+package com.wensheng.sso.service.util;
 
 import java.lang.annotation.Annotation;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.wensheng.sso.params;
+package com.wensheng.sso.service.util;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,13 +28,7 @@ public class PageReqRepHelper {
         (pageable.getPage()-1)*pageable.getSize(): 0;
   }
 
-//  public static <T> Page<T> getPageRespdep(Long total, List<T> list, PageInfo pageable){
-//    PageRequest pageRequest = PageRequest.of(pageable.page(), pageable.getSize());
-//
-//    PageImpl page = new PageImpl<T>(list, pageRequest, total );
-//    return page;
-//
-//  }
+
 
   public static <T> AmcPage <T> getAmcPage(List<T> queryResults, Long total){
     AmcPage<T> amcPage = new AmcPage<>();

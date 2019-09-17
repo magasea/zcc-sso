@@ -43,4 +43,9 @@ public enum AmcCmpyEnum {
 
   public Integer getId() {
     return id;
-  }}
+  }
+
+  public String getCname() {
+    return cname;
+  }
+}

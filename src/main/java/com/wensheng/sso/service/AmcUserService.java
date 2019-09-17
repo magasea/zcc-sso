@@ -7,7 +7,10 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
+import com.wensheng.sso.service.util.QueryParam;
 import java.util.List;
+import java.util.Map;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author chenwei on 3/14/19
@@ -50,4 +53,8 @@ public interface AmcUserService {
 
   List<AmcUser> searchUserByPhone(String mobilePhone);
   List<AmcUser> searchUserByName(String name);
+
+  List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam);
+
+  Long queryUserCount(QueryParam queryParam);
 }

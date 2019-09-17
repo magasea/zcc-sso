@@ -4,6 +4,9 @@ import com.wensheng.sso.aop.AmcUserCreateChecker;
 import com.wensheng.sso.aop.AmcUserModifyChecker;
 import com.wensheng.sso.service.AmcEMailService;
 import com.wensheng.sso.service.impl.AmcEmailServiceImpl;
+import com.wensheng.sso.service.util.AmcPage;
+import com.wensheng.sso.service.util.PageReqRepHelper;
+import com.wensheng.sso.service.util.QueryParam;
 import com.wensheng.sso.utils.AmcBeanUtils;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
@@ -26,6 +29,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -108,7 +112,38 @@ public class AmcUserController {
     return "succeed";
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
+  @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsersByPage", method = RequestMethod.POST)
+  @ResponseBody
+  public AmcPage<AmcUser> getAmcUsersByPage( @PathVariable Long amcId, @RequestBody QueryParam queryParam){
+
+    Map<String, Direction> orderByParam = PageReqRepHelper.getOrderParam(queryParam.getPageInfo());
+
+    if (CollectionUtils.isEmpty(orderByParam)) {
+      orderByParam.put("id", Direction.DESC);
+      orderByParam.put("user_name", Direction.DESC);
+      orderByParam.put("update_date", Direction.DESC);
+    }
+    List<AmcUser> queryResults = null;
+    Long totalCount = null;
+    int offset = PageReqRepHelper.getOffset(queryParam.getPageInfo());
+    try{
+
+        queryResults = amcUserService.queryUserPage(offset, queryParam.getPageInfo().getSize(), queryParam,
+            orderByParam);
+        totalCount = amcUserService.queryUserCount(queryParam);
+
+
+    }catch (Exception ex){
+      log.error("got error when query:"+ex.getMessage());
+      throw ex;
+    }
+
+//    Page<AmcAssetVo> page = PageReqRepHelper.getPageResp(totalCount, queryResults, assetQueryParam.getPageInfo());
+    return PageReqRepHelper.getAmcPage(queryResults, totalCount );
+
+  }
+
+//  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsers", method = RequestMethod.POST)
   @ResponseBody
   public List<AmcUser> getAmcUsers( @PathVariable Long amcId){
