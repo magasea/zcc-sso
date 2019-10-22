@@ -57,6 +57,9 @@ public class ExceptionUtils {
     INVALID_USER_OPERATION(1032, "Invalid user operation", "不合规的用户操作"),
 
     NO_SUCHAMCAPP(1033, "No such amc app", "目前系统中没有该应用模块"),
+    NO_SUCHAMCDEPT(1034, "No such amc dept", "目前系统中没有该部门"),
+    NO_SUCHAMCLOCATION(1035, "No such amc location", "目前系统中没有该地区"),
+    INVALID_PARAM(1036, "invalid param", "参数不对"),
     ;
     int code;
     String name;

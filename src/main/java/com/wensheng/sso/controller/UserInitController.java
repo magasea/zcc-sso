@@ -1,5 +1,7 @@
 package com.wensheng.sso.controller;
 
+import com.wensheng.sso.aop.LogExecutionTime;
+import com.wensheng.sso.service.AmcSsoService;
 import com.wensheng.sso.service.util.VerifyCodeUtil;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
@@ -13,26 +15,32 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author chenwei on 1/31/19
  * @project zcc-backend
  */
 @Controller
-@RequestMapping(value = "/user/init")
+@RequestMapping(value = "/sso/user/init")
 @Slf4j
 public class UserInitController {
 
@@ -45,6 +53,9 @@ public class UserInitController {
 
   @Autowired
   UserService userService;
+
+  @Autowired
+  AmcSsoService amcSsoService;
 
   @RequestMapping(value = "/user/verifycode")
   public boolean verifyVCode(String vcode){
@@ -146,6 +157,44 @@ public class UserInitController {
 //    ResponseEntity<byte[]> responseEntity = new ResponseEntity<byte[]>(VerifyCodeUtil.outputImage(verifyCode), headers,
 //        HttpStatus.OK);
 //    return responseEntity;
+  }
+
+  @LogExecutionTime
+  @RequestMapping(value = "/upload/namelist", method = RequestMethod.POST)
+  @ResponseBody
+  public boolean uploadNameList(
+      @RequestParam("uploadingNamelist") MultipartFile uploadingExcel) throws Exception {
+
+      boolean result ;
+      try {
+        result = amcSsoService.handleNameList(uploadingExcel);
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new ResponseStatusException(HttpStatus.MULTI_STATUS,e.getStackTrace().toString());
+      }
+
+
+    return result;
+  }
+
+  @LogExecutionTime
+  @RequestMapping(value = "/upload/jduserlist", method = RequestMethod.POST)
+  @ResponseBody
+  public boolean uploadJdUserList(
+      @RequestParam("uploadJdUserList") MultipartFile uploadingExcel) throws Exception {
+
+    boolean result ;
+    try {
+      result = amcSsoService.handleJDList(uploadingExcel);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.MULTI_STATUS,e.getStackTrace().toString());
+    }
+
+
+    return result;
   }
 
   

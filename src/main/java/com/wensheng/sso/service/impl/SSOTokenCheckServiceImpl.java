@@ -55,6 +55,15 @@ public class SSOTokenCheckServiceImpl implements SSOTokenCheckService {
       }
     }
   }
+
+  public boolean revokenTokenByUserName(String userName){
+    Collection<OAuth2AccessToken> accessTokens = tokenStore.findTokensByClientIdAndUserName(amcAdminId,
+        userName);
+    for(OAuth2AccessToken oAuth2AccessToken : accessTokens){
+      ssoTokenServices.revokeToken(oAuth2AccessToken.getValue());
+    }
+    return true;
+  }
 }
 
 

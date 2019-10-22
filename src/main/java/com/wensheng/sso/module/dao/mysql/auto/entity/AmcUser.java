@@ -7,6 +7,8 @@ public class AmcUser {
 
     private String userName;
 
+    private String userCname;
+
     private String password;
 
     private String mobilePhone;
@@ -49,6 +51,14 @@ public class AmcUser {
 
     public void setUserName(String userName) {
         this.userName = userName == null ? null : userName.trim();
+    }
+
+    public String getUserCname() {
+        return userCname;
+    }
+
+    public void setUserCname(String userCname) {
+        this.userCname = userCname == null ? null : userCname.trim();
     }
 
     public String getPassword() {

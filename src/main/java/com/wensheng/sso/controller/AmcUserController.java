@@ -2,6 +2,7 @@ package com.wensheng.sso.controller;
 
 import com.wensheng.sso.aop.AmcUserCreateChecker;
 import com.wensheng.sso.aop.AmcUserModifyChecker;
+import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.service.AmcEMailService;
 import com.wensheng.sso.service.impl.AmcEmailServiceImpl;
 import com.wensheng.sso.service.util.AmcPage;
@@ -79,7 +80,7 @@ public class AmcUserController {
   @PreAuthorize("hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser')")
   @RequestMapping(value = "/amcid/{amcid}/amc-user/create", method = RequestMethod.POST)
   @ResponseBody
-  public AmcUser createUser(@RequestBody AmcUser amcUser){
+  public AmcUser createUser(@RequestBody AmcUser amcUser) throws Exception {
 
     AmcUser amcUserResult = amcUserService.createUser(amcUser);
     return amcUserResult;
@@ -89,20 +90,17 @@ public class AmcUserController {
   @RequestMapping(value = "/amcid/{amcid}/amc-user/create_amc_admin", method = RequestMethod.POST)
   @ResponseBody
   public AmcUser createAmcAdmin(@RequestBody AmcUser amcUser){
-
-
     AmcUser amcUserResult = amcUserService.createAmcAdmin(amcUser);
-
-
     return amcUserResult;
   }
 
   @AmcUserCreateChecker
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/create_amc_user", method = RequestMethod.POST)
   @ResponseBody
   public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
-
+    if(null == amcId || amcId < 0){
+      amcId = Long.valueOf(AmcCmpyEnum.CMPY_WENSHENG.getId());
+    }
     amcUser.setCompanyId(amcId);
     AmcUser amcUserResult = amcUserService.createAmcUser(amcUser);
     if(amcUserResult == null){
@@ -117,6 +115,7 @@ public class AmcUserController {
   public AmcPage<AmcUser> getAmcUsersByPage( @PathVariable Long amcId, @RequestBody QueryParam queryParam){
 
     Map<String, Direction> orderByParam = PageReqRepHelper.getOrderParam(queryParam.getPageInfo());
+
 
     if (CollectionUtils.isEmpty(orderByParam)) {
       orderByParam.put("id", Direction.DESC);
@@ -201,11 +200,18 @@ public class AmcUserController {
     return "successed";
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
   @RequestMapping(value = "/amc-user/delUser", method = RequestMethod.POST)
   @ResponseBody
   public String delUser(@RequestParam Long userId){
     amcUserService.delUser(userId);
+    return "successed";
+  }
+
+
+  @RequestMapping(value = "/amc-user/userMod", method = RequestMethod.POST)
+  @ResponseBody
+  public String userMod(@RequestBody AmcUser amcUser) throws Exception{
+    amcUserService.userMod(amcUser);
     return "successed";
   }
 
@@ -232,86 +238,6 @@ public class AmcUserController {
 
 
 
-//  @PreAuthorize("hasRole('SYSTEM_ADMIN') and #oauth2.hasScope('write')")
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-  @RequestMapping(value = "/amc/amc-company/create", method = RequestMethod.POST)
-  @ResponseBody
-  public AmcCompany createCompany(@RequestBody AmcCompany amcCompany){
-
-    AmcCompany amcCompanyResult = amcBasicService.createCompany(amcCompany);
-    return amcCompanyResult;
-
-  }
-
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-  @RequestMapping(value = "/amc/amc-company/companys", method = RequestMethod.POST)
-  @ResponseBody
-  public List<AmcCompany> queryCompany(){
-
-    List<AmcCompany> amcCompanyResult = amcBasicService.queryCompany();
-    return amcCompanyResult;
-
-  }
-
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or hasPermission(#companyId, 'AMC_VIEW')")
-  @RequestMapping(value = "/amc/amc-company/{companyId}/company", method = RequestMethod.POST)
-  @ResponseBody
-  public AmcCompany queryCompany(@PathVariable Long companyId){
-
-    AmcCompany amcCompanyResult = amcBasicService.queryCompany(companyId);
-    return amcCompanyResult;
-
-  }
-
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or  (hasRole('AMC_ADMIN') and hasPermission(#amcId, 'crud_amcuser'))")
-  @RequestMapping(value = "/amc/amc-company/{amcId}/amc-department/create", method = RequestMethod.POST)
-  @ResponseBody
-  public AmcDept createDepartment(@RequestBody AmcDept amcDept, @PathVariable Long amcId){
-
-    AmcDept amcDeptResult = amcBasicService.createDept(amcDept);
-    return amcDeptResult;
-
-  }
-
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or hasPermission(#amcId, 'crud_amcuser')")
-  @RequestMapping(value = "/amc/amc-company/{amcId}/amc-department/depts")
-  @ResponseBody
-  public Map<Long, List<AmcDept>> queryDepts( @PathVariable Long amcId){
-    Map<Long, List<AmcDept>> result = null;
-    if(amcId > 0){
-      List<AmcDept> amcDeptResult = amcBasicService.queryDept(amcId);
-      result = new HashMap<>();
-      result.put(amcId, amcDeptResult);
-    }else if (amcId == 0){
-      log.info("it is system admin with amcid 0");
-      List<AmcDept> amcDepts = amcBasicService.queryDept();
-      if(!CollectionUtils.isEmpty(amcDepts)){
-        result = new HashMap<>();
-        for(AmcDept amcDept: amcDepts){
-          if(!result.containsKey(amcDept.getCmpyId())){
-            result.put(amcDept.getCmpyId(), new ArrayList<>());
-          }
-          result.get(amcDept.getCmpyId()).add(amcDept);
-        }
-      }else{
-        log.error("Failed to query all depts");
-        return new HashMap<>();
-      }
-    }
-
-
-    return result;
-
-  }
-
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or hasRole('AMC_ADMIN')")
-  @RequestMapping(value = "/amc/amc-company/createCmpyDept", method = RequestMethod.POST)
-  @ResponseBody
-  public AmcCmpyDeptVo createAmcCmpyDept(@RequestBody AmcCmpyDeptVo amcCmpyDeptVo) throws Exception {
-
-    AmcCmpyDeptVo amcCmpyDeptVoResult = amcBasicService.createModifyCmpyDept(amcCmpyDeptVo);
-    return amcCmpyDeptVoResult;
-  }
 
 
   @PreAuthorize("hasRole('SYSTEM_ADMIN')")
@@ -346,12 +272,33 @@ public class AmcUserController {
     return amcSsoService.getUserDetailByUserId(userId);
   }
 
+  @RequestMapping(value = "/sso/resetUserPwd", method = RequestMethod.POST)
+  @ResponseBody
+  public void resetUserPwd(@RequestParam("userId") Long userId) throws Exception {
+    amcUserService.resetUserPwd(userId);
+  }
+
 
   @RequestMapping(value = "/sso/passwdReset", method = RequestMethod.POST)
   @ResponseBody
   public void passwdReset(@RequestParam("email") String email) throws Exception {
 
      amcEmailService.confirmReset(email);
+  }
+
+  @RequestMapping(value = "/sso/setNewPassword", method = RequestMethod.POST)
+  @ResponseBody
+  public void passwdReset(@RequestParam("originPwd") String originPwd, @RequestParam("newPwd") String newPwd,
+      @RequestParam("newPwdAgain") String newPwdAgain,
+      @RequestParam("mobilePhone") String mobilePhone) throws Exception {
+    if(StringUtils.isEmpty(originPwd) || StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(mobilePhone) ||
+        StringUtils.isEmpty(newPwdAgain)){
+      throw ExceptionUtils.getAmcException(AmcExceptions.MISSING_MUST_PARAM);
+    }
+    if(!newPwd.equals(newPwdAgain)){
+      throw ExceptionUtils.getAmcException(AmcExceptions.INVALID_PARAM, "新密码不一致， 请重新输入");
+    }
+    amcUserService.changePwd(originPwd, newPwd, mobilePhone);
   }
   @Data
   class AmcBasicUser{

@@ -71,7 +71,7 @@ spring:
 
     kafka:
         consumer:
-            group-id: grp-zcc-logger
+            group-id: grp-sso
             auto-offset-reset: earliest
         # change this property if you are using your own
         # Kafka cluster or your Docker IP is different
@@ -148,6 +148,7 @@ env:
     dbpasswd: wensheng
     kfkhost: 10.20.100.238
     mongodb-host: 10.20.100.235
+    file-repo: /backup/temp
     oauth2:
         host: 10.20.100.235
         authLink: http://${env.oauth2.host}:11002

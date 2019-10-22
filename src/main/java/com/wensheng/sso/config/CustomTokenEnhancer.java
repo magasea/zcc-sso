@@ -22,12 +22,15 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
 //        List<AmcUser> amcUserList = amcUserService.getAmcUserByPhoneNum(authentication.getName());
 //        if(!CollectionUtils.isEmpty(amcUserList)){
-        additionalInfo.put("nickName", amcUserDetail.getNickName());
         additionalInfo.put("title", amcUserDetail.getTitle());
+        additionalInfo.put("mobilephone", amcUserDetail.getMobilePhone());
+        additionalInfo.put("nickName", amcUserDetail.getNickName());
         additionalInfo.put("username", amcUserDetail.getUserName());
+        additionalInfo.put("usercname", amcUserDetail.getUserCname());
         additionalInfo.put("userId", amcUserDetail.getId());
         additionalInfo.put("location", amcUserDetail.getLocation());
         additionalInfo.put("deptId", amcUserDetail.getDeptId());
+        additionalInfo.put("cmpyid", amcUserDetail.getCompanyId());
         additionalInfo.put("lgroup", amcUserDetail.getLgroup());
 //        }
 

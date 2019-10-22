@@ -24,7 +24,7 @@ public class KafkaConfig {
   @Autowired
   private KafkaProperties kafkaProperties;
 
-  private String MQ_TOPIC_WECHAT_USERLOCATION = KafkaParams.MQ_TOPIC_WECHAT_USERLOCATION;
+  private String MQ_TOPIC_SSO_USERCHANGED = KafkaParams.MQ_TOPIC_SSO_USERCHANGED;
 
   // Producer configuration
 
@@ -51,7 +51,7 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic adviceTopic() {
-    return new NewTopic(MQ_TOPIC_WECHAT_USERLOCATION, 3, (short) 1);
+    return new NewTopic(MQ_TOPIC_SSO_USERCHANGED, 3, (short) 1);
   }
 
   // Consumer configuration

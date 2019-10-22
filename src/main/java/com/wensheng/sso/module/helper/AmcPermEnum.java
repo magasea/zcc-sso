@@ -8,17 +8,20 @@ import java.util.function.Function;
  * @project miniapp-backend
  */
 public enum AmcPermEnum {
-  PERM_CMPY("PERM_CMPY",1),
-  PERM_JD("PERM_JD",2),
-  PERM_ZCC("PERM_ZCC",3),
-  PERM_MARKETDATA("PERM_MARKETDATA",4),
-  PERM_ANALYSIS("PERM_ANALYSIS",5),
+  PERM_CMPY("PERM_CMPY", "全部公司应用",1),
+  PERM_JD("PERM_JD","尽调",2),
+  PERM_ZCC("PERM_ZCC","债查查",3),
+  PERM_MARKETDATA("PERM_MARKETDATA","存量分析",4),
+  PERM_ANALYSIS("PERM_ANALYSIS","市场分析",5),
+  PERM_SSO("PERM_SSO", "单点登录",6),
   ;
   private String name;
+  private String cnanme;
   private Integer id;
 
-  AmcPermEnum(String name, int id){
+  AmcPermEnum(String name, String cname, int id){
     this.name = name;
+    this.cnanme = cname;
     this.id = id;
   }
 

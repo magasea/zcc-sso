@@ -10,9 +10,10 @@ import java.util.function.Function;
 public enum AmcLocationEnum {
   BEIJING_LOCATION("BEIJING_LOCATION","北京地区", 1),
   SHANGHAI_LOCATION("SHANGHAI_LOCATION","上海地区", 2),
-  NANJING_LOCATION("NANJING_LOCATION","南京地区", 3),
-  HANGZHOU_LOCATION("HANGZHOU_LOCATION","杭州地区", 4),
-  GUANGZHOU_LOCATION("GUANGZHOU_LOCATION","广州地区", 5),
+  JIANGSU_LOCATION("JIANGSU_LOCATION","江苏地区", 3),
+  ZHEJIANG_LOCATION("ZHEJIANG_LOCATION","浙江地区", 4),
+  GUANGDONG_LOCATION("GUANGDONG_LOCATION","广东地区", 5),
+  OTHER_LOCATION("OTHER_LOCATION","其他地区", 6),
   ;
   private String name;
   private String cname;

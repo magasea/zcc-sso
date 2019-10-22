@@ -9,15 +9,17 @@ import java.util.function.Function;
  */
 public enum  AmcUserValidEnum {
 
-  VALID(1, "用户账户正常"),
-  LOCKED(2, "用户账户被锁"),
-  DELETED(3, "用户账户被删除"),
+  VALID(1, "VALID","用户账户正常"),
+  INVALID(2, "INVALID","用户账户失效"),
+  DELETED(3, "DELETED","用户账户被删除"),
         ;
   int id;
   String name;
-  AmcUserValidEnum(int id, String name){
+  String cname;
+  AmcUserValidEnum(int id, String name, String cname){
     this.id = id;
     this.name = name;
+    this.cname = cname;
   }
 
 

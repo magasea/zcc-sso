@@ -9,6 +9,7 @@ public class QueryParam {
   int deptId;
   int location;
   String name;
+  int title;
   String mobilePhone;
   PageInfo pageInfo;
 

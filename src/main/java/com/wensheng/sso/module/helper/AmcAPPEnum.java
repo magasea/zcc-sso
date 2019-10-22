@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public enum AmcAPPEnum {
 
-  AMCAPP_CMPY("AMCAPP_CMPY","全公司", 1),
+  AMCAPP_SSO("AMCAPP_SSO","单点登录中心", 1),
   AMCAPP_JD("AMCAPP_JD","尽调工具",2),
   AMCAPP_ZCC("AMCAPP_ZCC","债查查",3),
   AMCAPP_MARKETDATA("AMCAPP_MARKETDATA","存量分析",4),

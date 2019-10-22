@@ -1,6 +1,7 @@
 package com.wensheng.sso.service;
 
 import com.wensheng.sso.module.common.WechatUserLocation;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUser;
 
 /**
@@ -10,6 +11,5 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUser;
 public interface KafkaService {
 
 
-  void send(WechatUserLocation wechatUserLocation);
-  void send(AmcWechatUser amcWechatUser);
+  void send(AmcUser amcUser);
 }

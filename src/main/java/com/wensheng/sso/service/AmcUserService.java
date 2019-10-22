@@ -20,7 +20,7 @@ public interface AmcUserService {
 
   public void modifyUserRole(Long userId, List<Long> roleIds);
 
-  AmcUser createUser(AmcUser amcUser);
+  AmcUser createUser(AmcUser amcUser) throws Exception;
 
   List<AmcRole> getAmcRoles();
 
@@ -45,6 +45,8 @@ public interface AmcUserService {
 
   List<AmcUser> getAllUsers();
 
+  boolean userMod(AmcUser amcUser) throws Exception;
+
   void modifyUserValidState(Long userId, AmcUserValidEnum amcUserValidEnum) throws Exception;
 
   void modifyUserValidState(Long userId, Long amcId, AmcUserValidEnum amcUserValidEnum) throws Exception;
@@ -57,4 +59,10 @@ public interface AmcUserService {
   List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam);
 
   Long queryUserCount(QueryParam queryParam);
+
+  boolean resetUserPwd(Long userId);
+
+  boolean changePwd(String originPwd, String newPwd, String mobilePhone) throws Exception;
+
+  public boolean updateUserRole(AmcUser amcUser) throws Exception;
 }

@@ -15,6 +15,8 @@ public enum AmcDeptEnum {
   HEADQUARTER_DEPT("HEADQUARTER_DEPT","总部",5),
   TECH_DEPT("TECH_DEPT","技术部门",6),
   OUTSIDE("OUTSIDE","公司外部合作伙伴等",7),
+  FINANCE_DEPT("FINANCE_DEPT","财务部门",8),
+  PERSONNEL_DEPT("PERSONNEL_DEPT","人事部门",9),
 
   ;
   private String name;

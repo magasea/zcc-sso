@@ -219,7 +219,7 @@ public class WechatServiceImpl implements WechatService {
       amcWechatUserMapper.updateByExampleSelective(amcWechatUser, amcWechatUserExample);
 
     }
-    kafkaService.send(amcWechatUser);
+//    kafkaService.send(amcWechatUser);
     return amcWechatUser;
   }
 
@@ -246,7 +246,7 @@ public class WechatServiceImpl implements WechatService {
 
   @Override
   public String registryUserLocation(WechatUserLocation wechatUserLocation) {
-    kafkaService.send(wechatUserLocation);
+//    kafkaService.send(wechatUserLocation);
     return "succeed";
   }
 

@@ -235,6 +235,76 @@ public class AmcUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andUserCnameIsNull() {
+            addCriterion("user_cname is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameIsNotNull() {
+            addCriterion("user_cname is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameEqualTo(String value) {
+            addCriterion("user_cname =", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameNotEqualTo(String value) {
+            addCriterion("user_cname <>", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameGreaterThan(String value) {
+            addCriterion("user_cname >", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameGreaterThanOrEqualTo(String value) {
+            addCriterion("user_cname >=", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameLessThan(String value) {
+            addCriterion("user_cname <", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameLessThanOrEqualTo(String value) {
+            addCriterion("user_cname <=", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameLike(String value) {
+            addCriterion("user_cname like", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameNotLike(String value) {
+            addCriterion("user_cname not like", value, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameIn(List<String> values) {
+            addCriterion("user_cname in", values, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameNotIn(List<String> values) {
+            addCriterion("user_cname not in", values, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameBetween(String value1, String value2) {
+            addCriterion("user_cname between", value1, value2, "userCname");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserCnameNotBetween(String value1, String value2) {
+            addCriterion("user_cname not between", value1, value2, "userCname");
+            return (Criteria) this;
+        }
+
         public Criteria andPasswordIsNull() {
             addCriterion("password is null");
             return (Criteria) this;

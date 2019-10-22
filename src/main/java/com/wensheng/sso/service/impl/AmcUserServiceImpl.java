@@ -11,16 +11,19 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
-import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample.Criteria;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
+import com.wensheng.sso.module.helper.AmcDeptEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
 import com.wensheng.sso.service.AmcUserService;
+import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.util.QueryParam;
 import com.wensheng.sso.service.util.UserUtils;
-import com.wensheng.sso.utils.AmcTitleRoleUtil;
+import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import com.wensheng.sso.utils.ExceptionUtils;
+import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.utils.SQLUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +40,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -69,6 +73,9 @@ public class AmcUserServiceImpl implements AmcUserService {
   @Autowired
   AmcPermissionMapper amcPermissionMapper;
 
+  @Autowired
+  SSOTokenCheckServiceImpl ssoTokenCheckService;
+
   @Resource(name = "ssoTokenServices")
   private ConsumerTokenServices tokenServices;
 
@@ -78,6 +85,10 @@ public class AmcUserServiceImpl implements AmcUserService {
   @Value("${spring.security.oauth2.client.registration.amc-admin.client-id}")
   private String amcAdminClientId;
 
+  private final String defaultPasswd = "wensheng";
+
+  @Autowired
+  KafkaService kafkaService;
 
   @Override
   @CacheEvict
@@ -105,9 +116,13 @@ public class AmcUserServiceImpl implements AmcUserService {
   }
 
   @Override
-  public AmcUser createUser(AmcUser amcUser) {
+  @Transactional
+  public AmcUser createUser(AmcUser amcUser) throws Exception {
     int cnt = amcUserMapper.insertSelective(amcUser);
     if(cnt > 0){
+      if(amcUser.getTitle() != null || amcUser.getDeptId() != null){
+        updateUserRole(amcUser);
+      }
       return amcUser;
     }else{
       log.error(String.format("Failed to insert user"));
@@ -132,6 +147,7 @@ public class AmcUserServiceImpl implements AmcUserService {
 
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public AmcUser createAmcUser(AmcUser amcUser) throws Exception {
     AmcUser amcUserCreated = createUserAndRole(amcUser);
     return amcUserCreated;
@@ -212,6 +228,46 @@ public class AmcUserServiceImpl implements AmcUserService {
     return amcUsers;
   }
 
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean userMod(AmcUser amcUser) throws Exception {
+    amcUser.setPassword(null);
+    String mobilePhone = amcUser.getMobilePhone();
+    amcUser.setMobilePhone(null);
+
+    amcUserMapper.updateByPrimaryKeySelective(amcUser);
+    if(amcUser.getDeptId() != null || amcUser.getTitle() != null){
+      updateUserRole(amcUser);
+    }
+    ssoTokenCheckService.revokenTokenByUserName(mobilePhone);
+    amcUser.setMobilePhone(mobilePhone);
+    kafkaService.send(amcUser);
+    return true;
+  }
+  @Override
+  public boolean updateUserRole(AmcUser amcUser) throws Exception {
+    AmcDeptEnum amcDeptEnum = AmcDeptEnum.lookupByDisplayIdUtil(amcUser.getDeptId().intValue());
+    AmcSSOTitleEnum amcSSOTitleEnum = AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle());
+    List<AmcSSORolesEnum> amcSSORolesEnums = AmcAppPermCheckUtil.getRoleByUserProperties(amcDeptEnum, amcSSOTitleEnum);
+    if(CollectionUtils.isEmpty(amcSSORolesEnums)){
+      log.error("User with id:{}, name:{}, phone:{} dept:{} title:{} doesn't have valid dept id and tilte",
+          amcUser.getId(), amcUser.getUserName(), amcUser.getMobilePhone(), amcUser.getDeptId(), amcUser.getTitle());
+      throw ExceptionUtils.getAmcException(AmcExceptions.INVALID_PARAM, String.format("User with id:%d, name:%s, "
+              + "phone:%s dept:%d title:%d doesn't have valid dept id and tilte",
+          amcUser.getId(), amcUser.getUserName(), amcUser.getMobilePhone(), amcUser.getDeptId(), amcUser.getTitle()));
+    }
+    AmcUserRoleExample amcUserRoleExample = new AmcUserRoleExample();
+    amcUserRoleExample.createCriteria().andUserIdEqualTo(amcUser.getId());
+    amcUserRoleMapper.deleteByExample(amcUserRoleExample);
+    for(AmcSSORolesEnum amcSSORolesEnum: amcSSORolesEnums){
+      AmcUserRole amcUserRole = new AmcUserRole();
+      amcUserRole.setRoleId(Long.valueOf(amcSSORolesEnum.getId()));
+      amcUserRole.setUserId(amcUser.getId());
+      amcUserRoleMapper.insertSelective(amcUserRole);
+    }
+    return true;
+  }
+
   @CacheEvict
   @Override
   public void modifyUserValidState(Long userId, AmcUserValidEnum amcUserValidEnum) throws Exception{
@@ -223,7 +279,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUserExample.createCriteria().andIdEqualTo(userId);
     amcUserMapper.updateByExampleSelective(amcUser, amcUserExample);
 
-    if( AmcUserValidEnum.LOCKED == amcUserValidEnum){
+    if( AmcUserValidEnum.INVALID == amcUserValidEnum){
       log.info("will disableuser:{}", userId);
       disableUser(userId);
     }
@@ -253,7 +309,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUserExample.createCriteria().andIdEqualTo(userId).andCompanyIdEqualTo(amcId);
 
     amcUserMapper.updateByExampleSelective(amcUser, amcUserExample);
-    if( AmcUserValidEnum.LOCKED == amcUserValidEnum){
+    if( AmcUserValidEnum.INVALID == amcUserValidEnum){
       log.info("will disableuser:{}", userId);
       disableUser(userId);
     }
@@ -298,7 +354,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     }catch (Exception ex){
       log.error("set order by exception:", ex);
     }
-    List<AmcUser> amcUsers = amcUserMapper.selectByExampleWithRowbounds(amcUserExample, rowBounds);
+    List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
     amcUsers.forEach(item -> item.setPassword(""));
 
     return amcUsers;
@@ -310,16 +366,53 @@ public class AmcUserServiceImpl implements AmcUserService {
     return amcUserMapper.countByExample(amcUserExample);
   }
 
+  @Override
+  public boolean resetUserPwd(Long userId) {
+    if(userId <= 0){
+      return false;
+    }
+    AmcUser amcUser =  amcUserMapper.selectByPrimaryKey(userId);
+    if(amcUser == null){
+      return false;
+    }
+    amcUser.setPassword( UserUtils.getEncode( defaultPasswd));
+    amcUserMapper.updateByPrimaryKeySelective(amcUser);
+    return true;
+  }
+
+  @Override
+  public boolean changePwd(String originPwd, String newPwd, String mobilePhone) throws Exception {
+    AmcUserExample amcUserExample = new AmcUserExample();
+    amcUserExample.createCriteria().andMobilePhoneEqualTo(mobilePhone);
+    List<AmcUser> amcUsers =  amcUserMapper.selectByExample(amcUserExample);
+    if(CollectionUtils.isEmpty(amcUsers)){
+      throw ExceptionUtils.getAmcException(AmcExceptions.NO_SUCHUSER, String.format("mobilePhone:%s", mobilePhone));
+    }
+    if(!UserUtils.match(originPwd, amcUsers.get(0).getPassword())){
+      throw ExceptionUtils.getAmcException(AmcExceptions.NO_SUCHUSER, "原密码不正确, 如需重置密码可以联系技术部在单"
+          + "点登录管理中心重置密码");
+    }
+    amcUsers.get(0).setPassword(com.wensheng.sso.utils.UserUtils.getEncode(newPwd));
+    amcUserMapper.updateByPrimaryKey(amcUsers.get(0));
+    return true;
+  }
+
   private AmcUser createUserAndRole(AmcUser amcUser) throws Exception {
+    if(StringUtils.isEmpty(amcUser.getPassword())){
+      amcUser.setPassword(defaultPasswd);
+    }
     amcUser.setPassword(UserUtils.getEncode(amcUser.getPassword()));
     amcUserMapper.insertSelective(amcUser);
-    List<Long> roleIds = new ArrayList<>();
-    AmcSSORolesEnum amcSSORolesEnum =
-        AmcTitleRoleUtil.getRoleByTitle(AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle()));
-    roleIds.add(Long.valueOf(amcSSORolesEnum.getId()));
-    addRolesForUser(amcUser.getId(), roleIds);
+//    List<Long> roleIds = new ArrayList<>();
+//    AmcSSORolesEnum amcSSORolesEnum =
+//        AmcTitleRoleUtil.getRoleByTitle(AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle()));
+//    roleIds.add(Long.valueOf(amcSSORolesEnum.getId()));
+//    addRolesForUser(amcUser.getId(), roleIds);
+    updateUserRole(amcUser);
     return amcUser;
   }
+
+
 
   private void addRolesForUser(Long userId, List<Long> addRoleIds) {
     if(CollectionUtils.isEmpty(addRoleIds)){

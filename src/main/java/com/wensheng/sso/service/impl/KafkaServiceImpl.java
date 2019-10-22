@@ -2,6 +2,7 @@ package com.wensheng.sso.service.impl;
 
 import com.wensheng.sso.kafka.KafkaParams;
 import com.wensheng.sso.module.common.WechatUserLocation;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUser;
 import com.wensheng.sso.service.KafkaService;
 import javax.annotation.PostConstruct;
@@ -23,25 +24,19 @@ public class KafkaServiceImpl implements KafkaService {
   String env;
 
 
-  private String MQ_TOPIC_WECHAT_USERLOCATION = null;
-  private String MQ_TOPIC_WECHAT_USERCREATE = null;
+  private String MQ_TOPIC_SSO_USERCHANGED = null;
 
 
 
   @PostConstruct
   void init(){
-    MQ_TOPIC_WECHAT_USERLOCATION = String.format("%s_%s",KafkaParams.MQ_TOPIC_WECHAT_USERLOCATION, env);
-    MQ_TOPIC_WECHAT_USERCREATE = String.format("%s_%s",KafkaParams.MQ_TOPIC_WECHAT_USERCREATE, env);
+    MQ_TOPIC_SSO_USERCHANGED = String.format("%s_%s",KafkaParams.MQ_TOPIC_SSO_USERCHANGED, env);
   }
 
 
   @Override
-  public void send(WechatUserLocation wechatUserLocation) {
-    kafkaTemplate.send(MQ_TOPIC_WECHAT_USERLOCATION, wechatUserLocation);
+  public void send(AmcUser amcUser) {
+    kafkaTemplate.send(MQ_TOPIC_SSO_USERCHANGED, amcUser);
   }
 
-  @Override
-  public void send(AmcWechatUser amcWechatUser) {
-    kafkaTemplate.send(MQ_TOPIC_WECHAT_USERCREATE, amcWechatUser);
-  }
 }

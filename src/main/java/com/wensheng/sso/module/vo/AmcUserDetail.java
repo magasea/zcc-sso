@@ -17,6 +17,7 @@ public class AmcUserDetail extends User {
   private Long id;
 
   private String userName;
+  private String userCname;
 
   private String password;
 

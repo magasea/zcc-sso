@@ -19,8 +19,12 @@ import org.aspectj.lang.reflect.CodeSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.http.AccessTokenRequiredException;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.util.CollectionUtils;
 
@@ -46,13 +50,13 @@ public class AmcAspect {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if(authentication == null || ! (authentication.getDetails() instanceof OAuth2AuthenticationDetails)){
       log.error("it is web user");
-      return joinPoint.proceed(new Object[]{amcUser});
+      throw new InsufficientAuthenticationException("access token required");
     }
     log.info(authentication.getDetails().toString());
     AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
 
-    if(amcUserDetail.getId() != null && 0 < amcUserDetail.getId() && authentication.getAuthorities().contains(
-        AmcSSORolesEnum.ROLE_SSO_LDR.getName())){
+    if(amcUserDetail.getId() != null && 0 < amcUserDetail.getId() && !authentication.getAuthorities().contains(
+        new SimpleGrantedAuthority(AmcSSORolesEnum.ROLE_SSO_LDR.getName()))){
 //      AmcUser currUser = amcUserService.getUserById(amcUserDetail.getId());
       amcUser.setLocation(amcUserDetail.getLocation());
       amcUser.setDeptId(amcUserDetail.getDeptId());
