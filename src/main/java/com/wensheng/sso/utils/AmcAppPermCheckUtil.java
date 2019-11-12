@@ -131,7 +131,7 @@ public class AmcAppPermCheckUtil {
             amcSSORolesEnums.add(AmcSSORolesEnum.ROLE_SSO_STAFF);
             break;
           default:
-            amcSSORolesEnums.add(AmcSSORolesEnum.ROLE_SSO_SYS_ADM);
+            amcSSORolesEnums.add(AmcSSORolesEnum.ROLE_SSO_STAFF);
             return amcSSORolesEnums;
 
         }

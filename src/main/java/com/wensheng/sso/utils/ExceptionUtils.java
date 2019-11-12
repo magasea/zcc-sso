@@ -60,6 +60,7 @@ public class ExceptionUtils {
     NO_SUCHAMCDEPT(1034, "No such amc dept", "目前系统中没有该部门"),
     NO_SUCHAMCLOCATION(1035, "No such amc location", "目前系统中没有该地区"),
     INVALID_PARAM(1036, "invalid param", "参数不对"),
+    DUPLICATE_OBJECT(1037, "Duplicate object", "试图创建重复的对象"),
     ;
     int code;
     String name;

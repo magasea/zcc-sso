@@ -94,7 +94,9 @@ spring:
             thread-name-prefix: checkExpireToken
             cronExprTrd: 0 0 6,10,11,12,13,14,15,16,17,18,19,23 * * *
             cronExprCust: 0 0 7,11,12,13,14,15,16,17,18,19,20,0 * * *
-
+    messages:
+        encoding: UTF-8
+        basename: locale/message
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:

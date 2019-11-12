@@ -73,5 +73,8 @@ public class AmcNumberUtils {
   public static BigDecimal getBigDecimalFromLongDiv1000000(Long input){
     return BigDecimal.valueOf(input).divide(BigDecimal.valueOf(1000000));
   }
+  public static boolean isNumeric(String str) {
+    return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+  }
 
 }

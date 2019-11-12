@@ -65,4 +65,6 @@ public interface AmcUserService {
   boolean changePwd(String originPwd, String newPwd, String mobilePhone) throws Exception;
 
   public boolean updateUserRole(AmcUser amcUser) throws Exception;
+
+  boolean initSysAdmin();
 }

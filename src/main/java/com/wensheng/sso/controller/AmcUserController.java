@@ -94,7 +94,7 @@ public class AmcUserController {
     return amcUserResult;
   }
 
-  @AmcUserCreateChecker
+  @PreAuthorize("hasAnyRole('ROLE_SSO_SYSTEM_ADMIN','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/create_amc_user", method = RequestMethod.POST)
   @ResponseBody
   public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
@@ -299,6 +299,13 @@ public class AmcUserController {
       throw ExceptionUtils.getAmcException(AmcExceptions.INVALID_PARAM, "新密码不一致， 请重新输入");
     }
     amcUserService.changePwd(originPwd, newPwd, mobilePhone);
+  }
+
+  @RequestMapping(value = "/sso/initSysAdmin", method = RequestMethod.POST)
+  @ResponseBody
+  public void initSysAdmin() throws Exception {
+
+    amcUserService.initSysAdmin();
   }
   @Data
   class AmcBasicUser{

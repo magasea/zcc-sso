@@ -3,14 +3,17 @@ package com.wensheng.sso.service.impl;
 
 import com.wensheng.sso.dao.mysql.mapper.AmcUserMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserRoleMapper;
+import com.wensheng.sso.dao.mysql.mapper.AmcUserRoleRuleMapper;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleRule;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.service.UserService;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -37,6 +40,9 @@ public class UserServiceImplTest {
 
   @Autowired
   AmcUserMapper amcUserMapper;
+
+  @Autowired
+  AmcUserRoleRuleMapper amcUserRoleRuleMapper;
 
   @Autowired
   UserService userService;
@@ -85,5 +91,200 @@ public class UserServiceImplTest {
         amcUserRoleMapper.insertSelective(amcUserRole);
       }
     }
+  }
+
+  @Test
+  public void initUserRoleDeptTitle(){
+
+    amcUserRoleRuleMapper.deleteByExample(null);
+    List<AmcUserRoleRule> amcUserRoleRules = new ArrayList<>();
+    //    技术部门
+    AmcUserRoleRule amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.TECH_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_MGR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_MGR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.TECH_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_STAFF.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_STAFF.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.TECH_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+
+    //    业务部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.BUSINESS_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.BUSINESS_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.BUSINESS_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+    //    风控部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.RISKCTRL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.RISKCTRL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.RISKCTRL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+
+    //    地产部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.ESTATE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.ESTATE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.ESTATE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+    //    股权部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.EQUITY_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.EQUITY_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.EQUITY_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+    //    财务部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.FINANCE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.FINANCE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.FINANCE_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+    //    人事部门
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.PERSONNEL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.PERSONNEL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.PERSONNEL_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+    //    总部
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.HEADQUARTER_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.HEADQUARTER_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.HEADQUARTER_DEPT.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+
+    //    合作伙伴
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+    amcUserRoleRule = new AmcUserRoleRule();
+    amcUserRoleRule.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcUserRoleRule.setTitle(AmcSSOTitleEnum.TITLE_LDR.getId());
+    amcUserRoleRule.setRoleId(AmcSSORolesEnum.ROLE_SSO_LDR.getId());
+    amcUserRoleRules.add(amcUserRoleRule);
+    amcUserRoleRule = null;
+
+
+    for(AmcUserRoleRule amcUserRoleRuleItem: amcUserRoleRules){
+      amcUserRoleRuleMapper.insertSelective(amcUserRoleRuleItem);
+    }
+
   }
 }

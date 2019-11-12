@@ -6,11 +6,6 @@ import com.wensheng.sso.dao.mysql.mapper.AmcRolePermissionMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserRoleMapper;
 import com.wensheng.sso.dao.mysql.mapper.ext.AmcUserExtMapper;
-import com.wensheng.sso.module.helper.AmcAPPEnum;
-import com.wensheng.sso.module.helper.AmcPermEnum;
-import com.wensheng.sso.utils.AmcAppPermCheckUtil;
-import com.wensheng.sso.utils.AmcBeanUtils;
-import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcPermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRoleExample;
@@ -18,10 +13,18 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.ext.AmcUserExt;
+import com.wensheng.sso.module.helper.AmcAPPEnum;
+import com.wensheng.sso.module.helper.AmcPermEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
 import com.wensheng.sso.module.vo.AmcUserDetail;
 import com.wensheng.sso.service.UserService;
+import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import com.wensheng.sso.utils.AmcBeanUtils;
+import com.wensheng.sso.utils.AmcNumberUtils;
+import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
+import com.wensheng.sso.utils.LoginExceptionUtils;
+import com.wensheng.sso.utils.LoginExceptionUtils.LoginExceptionEnum;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +33,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,41 +89,76 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String inputParam) throws UsernameNotFoundException {
+
     AmcAPPEnum amcAPPEnum = null;
     AmcPermEnum amcPermEnum = null;
     String[] userInfos = null;
-    if(!phoneNumber.contains(":")){
+    boolean withId = false;
+    if(!inputParam.contains(":")){
       log.error("Should contain amcAppInfo");
     }else {
-      userInfos = phoneNumber.split(":");
+      withId = true;
+      userInfos = inputParam.split(":");
       amcAPPEnum =  AmcAPPEnum.lookupByDisplayIdUtil(Integer.valueOf(userInfos[1]));
       if( null == amcAPPEnum){
         throw new PreAuthenticatedCredentialsNotFoundException(String.format("No such app with id:%s", userInfos[1]));
       }
     }
     AmcUserExample amcUserExample = new AmcUserExample();
-    amcUserExample.createCriteria().andMobilePhoneEqualTo(userInfos[0]);
+    boolean isPhone = false;
+    if((userInfos == null && AmcNumberUtils.isNumeric(inputParam)) || (userInfos != null && AmcNumberUtils.isNumeric(userInfos[0]))){
+      isPhone = false;
+      if(userInfos == null){
+        amcUserExample.createCriteria().andMobilePhoneEqualTo(inputParam);
+
+      }else{
+        amcUserExample.createCriteria().andMobilePhoneEqualTo(userInfos[0]);
+
+      }
+    }else{
+      if(userInfos == null){
+        amcUserExample.createCriteria().andUserNameEqualTo(inputParam);
+
+      }else{
+        amcUserExample.createCriteria().andUserNameEqualTo(userInfos[0]);
+
+      }
+    }
+
     List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
     if(CollectionUtils.isEmpty(amcUsers)){
-      throw new UsernameNotFoundException(AmcExceptions.NO_SUCHUSER.toString());
+      log.error("cannot find user for withId:{} isPhone:{} input param:{} ", withId, isPhone, inputParam);
+
+      throw new InternalAuthenticationServiceException(String.format("%s%s",
+          LoginExceptionEnum.USERNAME_ERROR.toString(), String.format("系统中没有该用户[%s]", inputParam) ));
     }
 
     List<String> authorities = getPermissions(amcUsers.get(0));
 
     List<GrantedAuthority> grantedAuthorityAuthorities = new ArrayList<>();
     authorities.forEach( auth -> grantedAuthorityAuthorities.add(new SimpleGrantedAuthority(auth)));
-    try {
-      boolean hasPermOnApp = AmcAppPermCheckUtil.checkPermApp(grantedAuthorityAuthorities, amcAPPEnum);
-      if(!hasPermOnApp){
-        throw new AuthenticationServiceException(String.format("user:%s cannot access the app:%s", amcUsers.get(0).getId(),
-            amcAPPEnum.getCname() ));
+    if(userInfos != null){
+      try {
+        boolean hasPermOnApp = AmcAppPermCheckUtil.checkPermApp(grantedAuthorityAuthorities, amcAPPEnum);
+        if(!hasPermOnApp){
+          throw new InternalAuthenticationServiceException(String.format("%s%s",LoginExceptionEnum.NOAUTHORITY_ERROR.toString(),
+              String.format("用户:%s 不能访问该应用:%s", amcUsers.get(0).getId(), amcAPPEnum.getCname() )));
+        }
+      } catch (Exception e) {
+        log.error("user cannot access the app ", e);
+        throw new InternalAuthenticationServiceException(String.format("%s%s",
+            LoginExceptionEnum.NOAUTHORITY_ERROR.toString(), e.getMessage()));
       }
-    } catch (Exception e) {
-      log.error("user cannot access the app ", e);
-      throw new AuthenticationServiceException(String.format("%s", e.getMessage()));
     }
+
     boolean userEnabled = amcUsers.get(0).getValid().equals(AmcUserValidEnum.VALID.getId());
+
+    if(!userEnabled){
+      log.error("user is disabled:{}", inputParam);
+      throw new InternalAuthenticationServiceException(String.format("%s",
+          LoginExceptionEnum.USERDISABLED_ERROR.toString() ));
+    }
     AmcUserDetail amcUserDetail = new AmcUserDetail(amcUsers.get(0).getMobilePhone(),"",userEnabled, userEnabled,userEnabled,
         userEnabled,grantedAuthorityAuthorities);
     AmcBeanUtils.copyProperties(amcUsers.get(0), amcUserDetail);

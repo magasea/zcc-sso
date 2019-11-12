@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 @EnableAuthorizationServer
 @ComponentScan(value = "com.wensheng.sso")
+
 @Slf4j
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
@@ -51,8 +52,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
-    private int accessTokenValidSeconds = 7200;
-//    private int accessTokenValidSeconds = 150;
+//    private int accessTokenValidSeconds = 7200;
+    private int accessTokenValidSeconds = 150;
 
     private int refreshTokenValidSeconds = 2592000;
 
@@ -123,6 +124,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         ;
 
     }
+
+
 
     @Bean(name = "ssoTokenServices" )
     @Primary

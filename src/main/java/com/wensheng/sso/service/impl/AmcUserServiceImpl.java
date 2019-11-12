@@ -13,6 +13,7 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
+import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
@@ -22,11 +23,16 @@ import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.util.QueryParam;
 import com.wensheng.sso.service.util.UserUtils;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import com.wensheng.sso.utils.AmcDateUtils;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.utils.SQLUtils;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,13 +40,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -234,6 +240,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUser.setPassword(null);
     String mobilePhone = amcUser.getMobilePhone();
     amcUser.setMobilePhone(null);
+    AmcUser historyUser = amcUserMapper.selectByPrimaryKey(amcUser.getId());
 
     amcUserMapper.updateByPrimaryKeySelective(amcUser);
     if(amcUser.getDeptId() != null || amcUser.getTitle() != null){
@@ -241,7 +248,10 @@ public class AmcUserServiceImpl implements AmcUserService {
     }
     ssoTokenCheckService.revokenTokenByUserName(mobilePhone);
     amcUser.setMobilePhone(mobilePhone);
-    kafkaService.send(amcUser);
+    if(amcUser.getTitle() != historyUser.getTitle() || amcUser.getDeptId() != historyUser.getDeptId() ||
+        amcUser.getLocation() != historyUser.getLocation() || amcUser.getLgroup() != historyUser.getLgroup()){
+      kafkaService.send(amcUser);
+    }
     return true;
   }
   @Override
@@ -266,6 +276,53 @@ public class AmcUserServiceImpl implements AmcUserService {
       amcUserRoleMapper.insertSelective(amcUserRole);
     }
     return true;
+  }
+
+  @Override
+  public boolean initSysAdmin() {
+    AmcUserExample amcUserExample = new AmcUserExample();
+    amcUserExample.createCriteria().andUserNameEqualTo("system_admin1");
+    amcUserExample.or().andMobilePhoneEqualTo("12345678901");
+    List<AmcUser> amcUsers =  amcUserMapper.selectByExample(amcUserExample);
+    if(!CollectionUtils.isEmpty(amcUsers)){
+
+
+      for(AmcUser amcUser: amcUsers){
+        delUser(amcUser.getId());
+      }
+    }
+    makeNewSysAdmin("system_admin1","12345678901");
+    amcUserExample.clear();
+    amcUserExample.createCriteria().andUserNameEqualTo("system_admin2");
+    amcUserExample.or().andMobilePhoneEqualTo("12345678902");
+    amcUsers =  amcUserMapper.selectByExample(amcUserExample);
+    if(!CollectionUtils.isEmpty(amcUsers)){
+
+
+      for(AmcUser amcUser: amcUsers){
+        delUser(amcUser.getId());
+      }
+    }
+    makeNewSysAdmin("system_admin2","12345678902");
+    return false;
+  }
+
+  private void makeNewSysAdmin(String systemAdminName, String mobileNum) {
+    AmcUser amcUser = new AmcUser();
+    amcUser.setUserName(systemAdminName);
+    amcUser.setMobilePhone(mobileNum);
+    amcUser.setPassword(UserUtils.getEncode(systemAdminName));
+    amcUser.setCompanyId(Long.valueOf(AmcCmpyEnum.CMPY_WENSHENG.getId()));
+    amcUser.setValid(AmcUserValidEnum.VALID.getId());
+    amcUser.setDeptId(Long.valueOf(AmcDeptEnum.TECH_DEPT.getId()));
+    amcUser.setTitle(AmcSSOTitleEnum.TITLE_MGR.getId());
+    amcUserMapper.insertSelective(amcUser);
+    AmcUserRole amcUserRole = new AmcUserRole();
+    amcUserRole.setUserId(amcUser.getId());
+    amcUserRole.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_SYS_ADM.getId()));
+    amcUserRole.setCreateBy(1L);
+    amcUserRole.setCreateDate( Date.from( LocalDateTime.now().atZone( ZoneId.systemDefault()).toInstant()));
+    amcUserRoleMapper.insertSelective(amcUserRole);
   }
 
   @CacheEvict
@@ -386,14 +443,16 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUserExample.createCriteria().andMobilePhoneEqualTo(mobilePhone);
     List<AmcUser> amcUsers =  amcUserMapper.selectByExample(amcUserExample);
     if(CollectionUtils.isEmpty(amcUsers)){
-      throw ExceptionUtils.getAmcException(AmcExceptions.NO_SUCHUSER, String.format("mobilePhone:%s", mobilePhone));
+      throw ExceptionUtils.getAmcException(AmcExceptions.NO_SUCHUSER, String.format("无此用户 mobilePhone:%s",
+          mobilePhone));
     }
     if(!UserUtils.match(originPwd, amcUsers.get(0).getPassword())){
       throw ExceptionUtils.getAmcException(AmcExceptions.NO_SUCHUSER, "原密码不正确, 如需重置密码可以联系技术部在单"
-          + "点登录管理中心重置密码");
+          + "点登录管理中心申请重置密码");
     }
     amcUsers.get(0).setPassword(com.wensheng.sso.utils.UserUtils.getEncode(newPwd));
     amcUserMapper.updateByPrimaryKey(amcUsers.get(0));
+    kafkaService.send(amcUsers.get(0));
     return true;
   }
 
@@ -402,7 +461,21 @@ public class AmcUserServiceImpl implements AmcUserService {
       amcUser.setPassword(defaultPasswd);
     }
     amcUser.setPassword(UserUtils.getEncode(amcUser.getPassword()));
-    amcUserMapper.insertSelective(amcUser);
+    AmcUserExample amcUserExample = new AmcUserExample();
+    if(!StringUtils.isEmpty(amcUser.getUserName())){
+      amcUserExample.createCriteria().andUserNameEqualTo(amcUser.getUserName());
+      List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
+      if(CollectionUtils.isEmpty(amcUsers)){
+        amcUserMapper.insertSelective(amcUser);
+      }else{
+        throw ExceptionUtils.getAmcException(AmcExceptions.DUPLICATE_OBJECT, String.format("用户名:%s 已经存在，请尝试别的用户名",
+            amcUser.getUserName()));
+      }
+    }else{
+      amcUserMapper.insertSelective(amcUser);
+    }
+
+
 //    List<Long> roleIds = new ArrayList<>();
 //    AmcSSORolesEnum amcSSORolesEnum =
 //        AmcTitleRoleUtil.getRoleByTitle(AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle()));
