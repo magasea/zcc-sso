@@ -96,6 +96,12 @@ spring:
     messages:
         encoding: UTF-8
         basename: locale/message
+    data:
+        mongodb:
+            host: ${env.mongodb-host}
+            port: 27017
+            database: amc_sso
+
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:

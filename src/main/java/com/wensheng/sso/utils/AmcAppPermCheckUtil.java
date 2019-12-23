@@ -18,12 +18,15 @@ public class AmcAppPermCheckUtil {
   public static boolean checkPermApp(Collection<GrantedAuthority> authorities, AmcAPPEnum amcAPPEnum) throws Exception {
     AmcPermEnum amcPermEnum = getPermFromApp(amcAPPEnum);
     boolean result = authorities.contains(new SimpleGrantedAuthority(amcPermEnum.getName()));
-    for(GrantedAuthority grantedAuthority: authorities){
-      if(grantedAuthority.getAuthority().equals(amcPermEnum.getName())){
-        return true;
-      }
+    if(authorities.contains(new SimpleGrantedAuthority(AmcSSORolesEnum.ROLE_SSO_SYS_ADM.getName())) ){
+      return true;
     }
-    return false;
+//    for(GrantedAuthority grantedAuthority: authorities){
+//      if(grantedAuthority.getAuthority().equals(amcPermEnum.getName())){
+//        return true;
+//      }
+//    }
+    return result;
 
   }
 
@@ -48,7 +51,7 @@ public class AmcAppPermCheckUtil {
 
   public static AmcDeptEnum getAmcDeptEnumFromExcelOfBusinessSys(String businessDeptName) throws Exception {
     if(businessDeptName.equals("上海文盛资产管理股份有限公司")  ){
-      return AmcDeptEnum.HEADQUARTER_DEPT;
+      return AmcDeptEnum.BUSINESS_DEPT;
     }
     if(businessDeptName.contains("地区")){
       return AmcDeptEnum.BUSINESS_DEPT;
@@ -138,7 +141,6 @@ public class AmcAppPermCheckUtil {
         break;
       case EQUITY_DEPT:
       case BUSINESS_DEPT:
-      case HEADQUARTER_DEPT:
       case RISKCTRL_DEPT:
       case ESTATE_DEPT:
         switch (amcSSOTitleEnum){

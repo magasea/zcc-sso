@@ -1,18 +1,28 @@
 package com.wensheng.sso.service.impl;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wensheng.sso.dao.mysql.mapper.AmcRolePermissionMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserMapper;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcDept;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermissionExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.helper.AmcCmpyEnum;
+import com.wensheng.sso.module.helper.AmcDeptEnum;
+import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
+import com.wensheng.sso.module.vo.AmcDeptPermsVo;
+import com.wensheng.sso.module.vo.DeptPermItem;
 import com.wensheng.sso.service.AmcSsoService;
 import com.wensheng.sso.service.AmcUserService;
 import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.UserService;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import io.swagger.models.auth.In;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,9 +32,11 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -61,6 +73,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -99,6 +112,8 @@ public class AmcSsoServiceImpl implements AmcSsoService {
   @Value("${spring.security.oauth2.client.registration.amc-client.redirectUris}")
   private String amcRedirectUris;
 
+  @Autowired
+  AmcRolePermissionMapper amcRolePermissionMapper;
 
   @Value("${weixin.appId}")
   String appId;
@@ -449,6 +464,77 @@ public class AmcSsoServiceImpl implements AmcSsoService {
       return false;
     }
     saveJDUsers(jdUsers);
+    return true;
+  }
+
+  @Override
+  public Map<Integer, List<Long>> getAmcRolePerm() {
+    AmcRolePermissionExample amcRolePermissionExample = new AmcRolePermissionExample();
+    List<AmcRolePermission> amcRolePermissions = amcRolePermissionMapper.selectByExample(amcRolePermissionExample);
+    Map<Integer, List<Long>> result  = new HashMap<>();
+
+    for(AmcDeptEnum amcDeptEnum :AmcDeptEnum.values()){
+      if(amcDeptEnum.isUsed()){
+        result.put(amcDeptEnum.getId(), new ArrayList<>());
+      }
+    }
+
+    if(CollectionUtils.isEmpty(amcRolePermissions)){
+      log.error("DB table amcRolePermissions is empty");
+      return result;
+    }
+    Map<Integer, Set<Long>> tempResult = new HashMap<>();
+    for(AmcRolePermission amcRolePermission: amcRolePermissions){
+      if(!tempResult.containsKey(amcRolePermission.getDeptId())){
+        tempResult.put(amcRolePermission.getDeptId(), new HashSet<>());
+      }
+      tempResult.get(amcRolePermission.getDeptId()).add(amcRolePermission.getPermissionId());
+    }
+
+    for(Entry<Integer, Set<Long>> item: tempResult.entrySet()){
+
+      if(CollectionUtils.isEmpty(item.getValue())){
+        log.error("Failed to find perms for deptId {}", item.getKey());
+        continue;
+      }
+      if(result.containsKey(item.getKey())){
+        result.get(item.getKey()).addAll(item.getValue());
+      }
+
+
+    }
+   return result;
+  }
+
+  @Override
+ @Transactional(rollbackFor = Exception.class)
+  public boolean updateAmcRolePerm(Map<Integer, List<Long>> amcDeptPerm) {
+    AmcRolePermissionExample amcRolePermissionExample = new AmcRolePermissionExample();
+    amcRolePermissionMapper.deleteByExample(amcRolePermissionExample);
+
+    if(CollectionUtils.isEmpty(amcDeptPerm)){
+      log.error("There is empty deptPermItems:{}", amcDeptPerm);
+      return false;
+    }
+    AmcRolePermission amcRolePermission = new AmcRolePermission();
+    for(Entry<Integer, List<Long>> deptPermItem: amcDeptPerm.entrySet()){
+      for(int permIdx = 0; permIdx < deptPermItem.getValue().size() ; permIdx ++){
+        amcRolePermission.setDeptId(deptPermItem.getKey());
+        amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_MGR.getId()));
+        amcRolePermission.setPermissionId(deptPermItem.getValue().get(permIdx));
+        amcRolePermissionMapper.insertSelective(amcRolePermission);
+        amcRolePermission.setDeptId(deptPermItem.getKey());
+        amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_STAFF.getId()));
+        amcRolePermission.setPermissionId(deptPermItem.getValue().get(permIdx));
+        amcRolePermissionMapper.insertSelective(amcRolePermission);
+        amcRolePermission.setDeptId(deptPermItem.getKey());
+        amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_LDR.getId()));
+        amcRolePermission.setPermissionId(deptPermItem.getValue().get(permIdx));
+        amcRolePermissionMapper.insertSelective(amcRolePermission);
+
+      }
+
+    }
     return true;
   }
 

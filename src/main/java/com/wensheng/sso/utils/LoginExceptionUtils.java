@@ -20,7 +20,7 @@ public class LoginExceptionUtils {
 
     @Override
     public String toString() {
-      return String.format("%s-%s-%s", errorCode, errorMsg, desc);
+      return String.format("%s %s %s", errorCode, errorMsg, desc);
 
     }
   }

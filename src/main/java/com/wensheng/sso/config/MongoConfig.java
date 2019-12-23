@@ -2,6 +2,7 @@ package com.wensheng.sso.config;
 
 import com.mongodb.MongoClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,23 +19,33 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 @EnableConfigurationProperties(MongoProperties.class)
 public class MongoConfig {
 
-    private final MongoProperties mongoProperties;
+    @Value("${spring.data.mongodb.database}")
+    String dbName;
+
+    @Value("${spring.data.mongodb.host}")
+    String host;
+
+    @Value("${spring.data.mongodb.port}")
+    int port;
+
+    @Bean
+    public MongoClient mongoClient(){
+        return new MongoClient(host, port);
+    }
 
 
 
 
-//    @Primary
-//    @Bean(name = PrimaryMongoConfig.MONGO_TEMPLATE)
-//    public MongoTemplate wszccTemplate() throws Exception {
-//        return new MongoTemplate(wszccFactory(this.mongoProperties.getWszcc_sso()));
-//    }
-//
-//
-//
-//    @Bean
-//    public MongoDbFactory wszccFactory(final org.springframework.boot.autoconfigure.mongo.MongoProperties mongo) throws Exception {
-//        return new SimpleMongoDbFactory(new MongoClient(mongo.getHost(), mongo.getPort()),
-//                mongo.getDatabase());
-//    }
+    @Bean
+    public MongoTemplate mongoTemplate() {
+
+
+
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient(), dbName);
+
+        return mongoTemplate;
+
+    }
+
 
 }

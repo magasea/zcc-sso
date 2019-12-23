@@ -52,8 +52,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
-//    private int accessTokenValidSeconds = 7200;
-    private int accessTokenValidSeconds = 150;
+    private int accessTokenValidSeconds = 43200;
+//    private int accessTokenValidSeconds = 150;
 
     private int refreshTokenValidSeconds = 2592000;
 

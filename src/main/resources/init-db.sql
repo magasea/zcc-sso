@@ -18,13 +18,11 @@ INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (2,4,5)
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (4,2,5);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (4,3,5);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (4,4,5);
-
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,1,2);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,1,3);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,1,4);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,1,5);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,1,6);
-
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,2,2);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,2,3);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,2,4);
@@ -40,11 +38,6 @@ INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,4,3)
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,4,4);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,4,5);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (6,4,6);
-
-
-INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (3,2,3);
-INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (3,3,3);
-INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (3,4,3);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (5,2,3);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (5,3,3);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (5,4,3);

@@ -7,17 +7,21 @@ import com.wensheng.sso.module.helper.AmcLocationEnum;
 import com.wensheng.sso.module.helper.AmcPermEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
+import com.wensheng.sso.module.vo.AmcDeptPermsVo;
 import com.wensheng.sso.module.vo.AmcRolePermissionVo;
 import com.wensheng.sso.params.AmcBranchLocationEnum;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcPermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
+import com.wensheng.sso.service.AmcSsoService;
 import com.wensheng.sso.service.AmcUserService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,6 +37,9 @@ public class AmcBasicInfoController {
   @Autowired
   AmcUserService amcUserService;
 
+
+  @Autowired
+  AmcSsoService amcSsoService;
 
 
   @RequestMapping(value = "/role-perms", method = RequestMethod.POST)
@@ -155,5 +162,17 @@ public class AmcBasicInfoController {
       ));
     }
     return result;
+  }
+
+  @RequestMapping(value = "/getRolePerms", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<Integer, List<Long>> getRolePerms(){
+    return amcSsoService.getAmcRolePerm();
+  }
+
+  @RequestMapping(value = "/modRolePerms", method = RequestMethod.POST)
+  @ResponseBody
+  public boolean modRolePerms(@RequestBody  Map<Integer, List<Long>> deptPerms){
+    return amcSsoService.updateAmcRolePerm(deptPerms);
   }
 }

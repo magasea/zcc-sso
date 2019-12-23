@@ -170,7 +170,7 @@ public class AmcUserController {
   @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsers/searchByName", method = RequestMethod.POST)
   @ResponseBody
-  public List<AmcUser> searchAmcUserByName( @PathVariable Long amcId, @RequestParam("name") String name)
+  public List<AmcUser> searchAmcUserByName( @PathVariable Long amcId, @RequestBody String name)
       throws Exception {
     if(StringUtils.isEmpty(name)){
       throw ExceptionUtils.getAmcException(AmcExceptions.MISSING_MUST_PARAM,
@@ -272,6 +272,7 @@ public class AmcUserController {
     return amcSsoService.getUserDetailByUserId(userId);
   }
 
+  @PreAuthorize("hasAnyRole('ROLE_SSO_SYSTEM_ADMIN','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/sso/resetUserPwd", method = RequestMethod.POST)
   @ResponseBody
   public void resetUserPwd(@RequestParam("userId") Long userId) throws Exception {

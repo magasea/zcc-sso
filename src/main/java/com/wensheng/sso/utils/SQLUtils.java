@@ -15,12 +15,18 @@ public class SQLUtils {
   public static AmcUserExample getAmcUserExample(QueryParam queryParam) {
     AmcUserExample amcUserExample = new AmcUserExample();
     Criteria criteria = amcUserExample.createCriteria();
+    criteria.andUserNameNotLike("system_admin%");
+    criteria.andUserNameNotLike("zccadmin%");
     Criteria criteriaOr = amcUserExample.or();
+
+
     boolean needControllOr = false;
     if(!StringUtils.isEmpty(queryParam.getName())){
       StringBuilder sb = new StringBuilder().append("%").append(queryParam.getName()).append("%");
       criteria.andUserCnameLike(sb.toString());
       criteriaOr.andNickNameLike(sb.toString());
+      criteriaOr.andUserNameNotLike("system_admin%");
+      criteriaOr.andUserNameNotLike("zccadmin%");
       needControllOr = true;
     }
     if( queryParam.getDeptId() > 0 ){

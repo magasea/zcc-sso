@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
       userInfos = inputParam.split(":");
       amcAPPEnum =  AmcAPPEnum.lookupByDisplayIdUtil(Integer.valueOf(userInfos[1]));
       if( null == amcAPPEnum){
-        throw new PreAuthenticatedCredentialsNotFoundException(String.format("No such app with id:%s", userInfos[1]));
+        throw new PreAuthenticatedCredentialsNotFoundException(String.format("没有该应用:%s", userInfos[1]));
       }
     }
     AmcUserExample amcUserExample = new AmcUserExample();

@@ -13,7 +13,8 @@ public enum AmcLocationEnum {
   JIANGSU_LOCATION("JIANGSU_LOCATION","江苏地区", 3),
   ZHEJIANG_LOCATION("ZHEJIANG_LOCATION","浙江地区", 4),
   GUANGDONG_LOCATION("GUANGDONG_LOCATION","广东地区", 5),
-  OTHER_LOCATION("OTHER_LOCATION","其他地区", 6),
+//  OTHER_LOCATION("OTHER_LOCATION","其他地区", 6),
+  ALLCMPY_LOCATION("ALLCMPY_LOCATION","全公司", 7),
   ;
   private String name;
   private String cname;

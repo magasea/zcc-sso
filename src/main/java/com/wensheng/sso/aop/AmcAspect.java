@@ -1,5 +1,7 @@
 package com.wensheng.sso.aop;
 
+import com.google.gson.Gson;
+import com.wensheng.sso.module.dao.mongo.AmcUserOpLog;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
@@ -8,6 +10,8 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.vo.AmcUserDetail;
 import com.wensheng.sso.service.AmcUserService;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ import org.aspectj.lang.reflect.CodeSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -40,6 +45,11 @@ public class AmcAspect {
 
   @Autowired
   AmcUserService amcUserService;
+
+  @Autowired
+  MongoTemplate mongoTemplate;
+
+  Gson gson = new Gson();
 
 
   @Around("@annotation(AmcUserCreateChecker)")
@@ -63,6 +73,29 @@ public class AmcAspect {
     }
 
     return joinPoint.proceed(new Object[]{amcUser,joinPoint.getArgs()[1]});
+  }
+
+  @Around("@annotation(AmcUserOpLogger)")
+  public Object aroundUserOp(ProceedingJoinPoint joinPoint) throws Throwable {
+    log.info("now get the point cut of aroundUserOp");
+    try{
+      AmcUserOpLog amcUserOpLog = new AmcUserOpLog();
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      if(authentication == null || ! (authentication.getDetails() instanceof OAuth2AuthenticationDetails)){
+        log.error("it is not a login user");
+      }else{
+        AmcUserDetail amcUserDetail = (AmcUserDetail) authentication.getPrincipal();
+        amcUserOpLog.setUserId(amcUserDetail.getId());
+
+      }
+      amcUserOpLog.setCallFunc(joinPoint.getSignature().getName());
+      amcUserOpLog.setParams(gson.toJson(joinPoint.getArgs()));
+      amcUserOpLog.setDateTime(Instant.now().getEpochSecond());
+      mongoTemplate.save(amcUserOpLog);
+    }catch (Exception ex){
+      log.error("Failed to get info aroundUserOp", ex);
+    }
+    return joinPoint.proceed(joinPoint.getArgs());
   }
 
   @Around("@annotation(AmcUserQueryChecker)")
