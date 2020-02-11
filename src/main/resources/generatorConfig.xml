@@ -15,9 +15,9 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://10.20.100.70:3306/WS_SSO?useSSL=false"
+                        connectionURL="jdbc:mysql://10.20.100.235:3306/WS_SSO?useSSL=false"
                         userId="root"
-                        password="wensheng">
+                        password="Wensheng@123">
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
         <javaTypeResolver>

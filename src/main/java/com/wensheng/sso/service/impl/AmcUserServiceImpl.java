@@ -554,7 +554,36 @@ public class AmcUserServiceImpl implements AmcUserService {
     }
     amcUser.setPassword(UserUtils.getEncode(amcUser.getPassword()));
     AmcUserExample amcUserExample = new AmcUserExample();
+    boolean hasUName = false;
+    boolean hasPhoneNum = false;
     if(!StringUtils.isEmpty(amcUser.getUserName())){
+      hasUName  = true;
+    }
+    if(!StringUtils.isEmpty(amcUser.getMobilePhone())){
+      hasPhoneNum = true;
+    }
+
+    if(hasUName && hasPhoneNum){
+      amcUserExample.createCriteria().andUserNameEqualTo(amcUser.getUserName());
+      amcUserExample.or().andMobilePhoneEqualTo(amcUser.getMobilePhone());
+      List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
+      if(CollectionUtils.isEmpty(amcUsers)){
+        amcUserMapper.insertSelective(amcUser);
+      }else{
+        throw ExceptionUtils.getAmcException(AmcExceptions.DUPLICATE_OBJECT, String.format("用户名:%s 或者 "
+                + "手机号:%s 已经存在，请尝试别的用户名或者手机号",
+            amcUser.getUserName(), amcUser.getMobilePhone()));
+      }
+    }else if(hasPhoneNum){
+      amcUserExample.createCriteria().andMobilePhoneEqualTo(amcUser.getMobilePhone());
+      List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
+      if(CollectionUtils.isEmpty(amcUsers)){
+        amcUserMapper.insertSelective(amcUser);
+      }else{
+        throw ExceptionUtils.getAmcException(AmcExceptions.DUPLICATE_OBJECT, String.format("用户名手机号:%s 已经存在，请尝试别的手机号",
+             amcUser.getMobilePhone()));
+      }
+    }else if(hasUName){
       amcUserExample.createCriteria().andUserNameEqualTo(amcUser.getUserName());
       List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
       if(CollectionUtils.isEmpty(amcUsers)){
@@ -563,7 +592,9 @@ public class AmcUserServiceImpl implements AmcUserService {
         throw ExceptionUtils.getAmcException(AmcExceptions.DUPLICATE_OBJECT, String.format("用户名:%s 已经存在，请尝试别的用户名",
             amcUser.getUserName()));
       }
-    }else{
+    }
+
+    else{
       amcUserMapper.insertSelective(amcUser);
     }
     kafkaService.send(amcUser);

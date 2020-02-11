@@ -8,20 +8,27 @@ import java.util.function.Function;
  * @project zcc-backend
  */
 public enum AmcSSOTitleEnum {
-  TITLE_SYS_ADM("SYS_ADM","系统管理员",  1),
-  TITLE_MGR("TITLE_MGR", "总经理/副总/总助",2),
-  TITLE_LDR("TITLE_LDR","组长", 3),
-  TITLE_STAFF("TITLE_STAFF", "组员", 4),
-  TITLE_PARTNER("TITLE_PARTNER", "合作方", 5),
+  TITLE_SYS_ADM("SYS_ADM","系统管理员",  1, false),
+  TITLE_MGR("TITLE_MGR", "总经理/副总/总助",2, true),
+  TITLE_LDR("TITLE_LDR","组长", 3, true),
+  TITLE_STAFF("TITLE_STAFF", "组员", 4, true),
+  TITLE_PARTNER("TITLE_PARTNER", "合作方", 5, false),
   ;
-  AmcSSOTitleEnum(String name ,String cname, int id){
+
+  public boolean isUsed() {
+    return isUsed;
+  }
+
+  AmcSSOTitleEnum(String name ,String cname, int id, boolean isUsed){
     this.name = name;
     this.id = id;
     this.cname = cname;
+    this.isUsed = isUsed;
   }
   private String name;
   private String cname;
   private int id;
+  private boolean isUsed = false;
 
 
   public String getName() {

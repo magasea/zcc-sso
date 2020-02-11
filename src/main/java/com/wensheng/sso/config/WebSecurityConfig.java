@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         .authorizeRequests().antMatchers("/login").permitAll()
         .antMatchers("/oauth/token/revokeById/**").permitAll()
+        .antMatchers("/amc/sso/basicInfo/**").permitAll()
     .antMatchers("/oauth/token/revokeByUserName/**").permitAll()
 		.antMatchers("/tokens/**").permitAll()
     .antMatchers("/user/init").permitAll()

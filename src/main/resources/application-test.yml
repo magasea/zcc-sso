@@ -141,7 +141,8 @@ message:
     commond: MT_REQUEST
     multiCommond: MULTI_MT_REQUEST
 
-
+kafka:
+    topic_amc_login: topic_amc_userLogin_${env.name}
 
 logging:
     level:
@@ -151,10 +152,10 @@ logging:
 
 env:
     name: test
-    dbhost: 10.20.100.70
-    dbusername: root
-    dbpasswd: wensheng
-    kfkhost: 10.20.100.238
+    dbhost: 10.20.100.235
+    dbusername: wsssoworker
+    dbpasswd: Wsamc@12345
+    kfkhost: 10.20.100.235
     mongodb-host: 10.20.100.235
     file-repo: /backup/temp
     oauth2:

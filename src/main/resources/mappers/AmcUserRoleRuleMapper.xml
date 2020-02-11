@@ -6,6 +6,8 @@
     <result column="dept_id" jdbcType="INTEGER" property="deptId" />
     <result column="title" jdbcType="INTEGER" property="title" />
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, dept_id, title, role_id
+    id, dept_id, title, role_id, update_by, update_time
   </sql>
   <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleRuleExample" resultMap="BaseResultMap">
     select
@@ -103,10 +105,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into AMC_USER_ROLE_RULE (dept_id, title, role_id
-      )
-    values (#{deptId,jdbcType=INTEGER}, #{title,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}
-      )
+    insert into AMC_USER_ROLE_RULE (dept_id, title, role_id, 
+      update_by, update_time)
+    values (#{deptId,jdbcType=INTEGER}, #{title,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+      #{updateBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleRule">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -123,6 +125,12 @@
       <if test="roleId != null">
         role_id,
       </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="deptId != null">
@@ -133,6 +141,12 @@
       </if>
       <if test="roleId != null">
         #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -157,6 +171,12 @@
       <if test="record.roleId != null">
         role_id = #{record.roleId,jdbcType=INTEGER},
       </if>
+      <if test="record.updateBy != null">
+        update_by = #{record.updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -167,7 +187,9 @@
     set id = #{record.id,jdbcType=BIGINT},
       dept_id = #{record.deptId,jdbcType=INTEGER},
       title = #{record.title,jdbcType=INTEGER},
-      role_id = #{record.roleId,jdbcType=INTEGER}
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      update_by = #{record.updateBy,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -184,6 +206,12 @@
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=INTEGER},
       </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -191,7 +219,9 @@
     update AMC_USER_ROLE_RULE
     set dept_id = #{deptId,jdbcType=INTEGER},
       title = #{title,jdbcType=INTEGER},
-      role_id = #{roleId,jdbcType=INTEGER}
+      role_id = #{roleId,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleRuleExample" resultMap="BaseResultMap">

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyWebResponseExceptionTranslator implements WebResponseExceptionTranslator {
   @Override
-  public ResponseEntity<OAuth2Exception> translate(Exception exception) throws Exception {
+  public ResponseEntity<Exception> translate(Exception exception) throws Exception {
     if (exception instanceof OAuth2Exception) {
       OAuth2Exception oAuth2Exception = (OAuth2Exception) exception;
       return ResponseEntity

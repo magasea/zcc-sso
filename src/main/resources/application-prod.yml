@@ -142,7 +142,8 @@ message:
     commond: MT_REQUEST
     multiCommond: MULTI_MT_REQUEST
 
-
+kafka:
+    topic_amc_login: topic_amc_userLogin_${env.name}
 
 logging:
     level:

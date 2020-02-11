@@ -86,7 +86,7 @@ public class AmcUserController {
     return amcUserResult;
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+  @PreAuthorize("hasRole('SSO_SYS_ADM')")
   @RequestMapping(value = "/amcid/{amcid}/amc-user/create_amc_admin", method = RequestMethod.POST)
   @ResponseBody
   public AmcUser createAmcAdmin(@RequestBody AmcUser amcUser){
@@ -94,7 +94,7 @@ public class AmcUserController {
     return amcUserResult;
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_SSO_SYSTEM_ADMIN','SSO_LDR','SSO_MGR')")
+  @PreAuthorize("hasAnyRole('SSO_SYS_ADM','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/create_amc_user", method = RequestMethod.POST)
   @ResponseBody
   public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
@@ -142,7 +142,6 @@ public class AmcUserController {
 
   }
 
-//  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsers", method = RequestMethod.POST)
   @ResponseBody
   public List<AmcUser> getAmcUsers( @PathVariable Long amcId){
@@ -152,7 +151,7 @@ public class AmcUserController {
 
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
+  @PreAuthorize("hasRole('SSO_SYS_ADM') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsers/searchByPhone", method = RequestMethod.POST)
   @ResponseBody
   public List<AmcUser> searchAmcUserByPhone( @PathVariable Long amcId, @RequestParam("mobilePhone") String mobilePhone)
@@ -167,7 +166,7 @@ public class AmcUserController {
 
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
+  @PreAuthorize("hasRole('SSO_SYS_ADM') or (hasRole('AMC_ADMIN') and hasPermission(#amcId,'crud_amcuser'))")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsers/searchByName", method = RequestMethod.POST)
   @ResponseBody
   public List<AmcUser> searchAmcUserByName( @PathVariable Long amcId, @RequestBody String name)
@@ -182,7 +181,7 @@ public class AmcUserController {
 
   }
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+  @PreAuthorize("hasRole('SSO_SYS_ADM')")
   @RequestMapping(value = "/amc-user/allUsers", method = RequestMethod.POST)
   @ResponseBody
   public List<AmcUser> getAllUsers( ){
@@ -192,7 +191,7 @@ public class AmcUserController {
 
   }
   @AmcUserModifyChecker
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+  @PreAuthorize("hasRole('SSO_SYS_ADM')")
   @RequestMapping(value = "/amc-user/modifyUser", method = RequestMethod.POST)
   @ResponseBody
   public String modifyUser(@RequestParam Long userId, @RequestParam AmcUserValidEnum amcUserValidEnum) throws Exception{
@@ -227,7 +226,7 @@ public class AmcUserController {
   }
 
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+  @PreAuthorize("hasRole('SSO_SYS_ADM')")
   @RequestMapping(value = "/amcid/{amcid}/dept/amc-user/modifyRole", method = RequestMethod.POST)
   @ResponseBody
   public String modifyRole(@RequestBody UserRoleModifyVo userRoleModifyVo ){
@@ -240,7 +239,7 @@ public class AmcUserController {
 
 
 
-  @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+  @PreAuthorize("hasRole('SSO_SYS_ADM')")
   @RequestMapping(method = RequestMethod.POST, value = "/amcid/{amcId}/amc-user/amcUsers/revokeByName")
   @ResponseBody
   public void revokeTokenByUserName( @RequestParam String userName) {
@@ -272,7 +271,7 @@ public class AmcUserController {
     return amcSsoService.getUserDetailByUserId(userId);
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_SSO_SYSTEM_ADMIN','SSO_LDR','SSO_MGR')")
+  @PreAuthorize("hasAnyRole('SSO_SYS_ADM','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/sso/resetUserPwd", method = RequestMethod.POST)
   @ResponseBody
   public void resetUserPwd(@RequestParam("userId") Long userId) throws Exception {

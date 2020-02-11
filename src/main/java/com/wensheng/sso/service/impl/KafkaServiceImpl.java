@@ -23,6 +23,9 @@ public class KafkaServiceImpl implements KafkaService {
   @Value("${env.name}")
   String env;
 
+  @Value("${kafka.topic_amc_login}")
+  String userLoginTopic;
+
 
   private String MQ_TOPIC_SSO_USERCHANGED = null;
 
@@ -37,6 +40,11 @@ public class KafkaServiceImpl implements KafkaService {
   @Override
   public void send(AmcUser amcUser) {
     kafkaTemplate.send(MQ_TOPIC_SSO_USERCHANGED, amcUser);
+  }
+
+  @Override
+  public void send(String topic, AmcUser amcUser) {
+    kafkaTemplate.send(userLoginTopic, amcUser);
   }
 
 }
