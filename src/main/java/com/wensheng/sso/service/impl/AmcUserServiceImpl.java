@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
@@ -126,6 +127,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   @Override
   @AmcUserOpLogger
   @Transactional(rollbackFor = Exception.class)
+  @CacheEvict
   public AmcUser createUser(AmcUser amcUser) throws Exception {
     int cnt = amcUserMapper.insertSelective(amcUser);
     if(cnt > 0){
@@ -242,6 +244,7 @@ public class AmcUserServiceImpl implements AmcUserService {
 
   @Override
   @AmcUserOpLogger
+  @CacheEvict
   @Transactional(rollbackFor = Exception.class)
   public boolean userMod(AmcUser amcUser) throws Exception {
     amcUser.setPassword(null);
@@ -264,6 +267,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     return true;
   }
   @Override
+  @CacheEvict
   public boolean updateUserRole(AmcUser amcUser) throws Exception {
     AmcDeptEnum amcDeptEnum = AmcDeptEnum.lookupByDisplayIdUtil(amcUser.getDeptId().intValue());
     AmcSSOTitleEnum amcSSOTitleEnum = AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle());
@@ -492,6 +496,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   }
 
   @Override
+  @Cacheable()
   public List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam) {
     AmcUserExample amcUserExample = SQLUtils.getAmcUserExample(queryParam);
     RowBounds rowBounds = new RowBounds(offset, size);
