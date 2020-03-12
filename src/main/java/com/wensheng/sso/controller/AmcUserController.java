@@ -271,6 +271,13 @@ public class AmcUserController {
     return amcSsoService.getUserDetailByUserId(userId);
   }
 
+  @RequestMapping(value = "/sso/getUserById", method = RequestMethod.POST)
+  @ResponseBody
+  public AmcUser getUserById(@RequestBody Long userId){
+
+    return amcSsoService.getUserById(userId);
+  }
+
   @PreAuthorize("hasAnyRole('SSO_SYS_ADM','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/sso/resetUserPwd", method = RequestMethod.POST)
   @ResponseBody
@@ -312,6 +319,7 @@ public class AmcUserController {
     Long id;
     String userName;
     String mobilePhone;
+    String userCname;
   }
 
 

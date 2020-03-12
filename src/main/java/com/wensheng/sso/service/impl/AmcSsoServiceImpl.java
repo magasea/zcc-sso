@@ -538,6 +538,13 @@ public class AmcSsoServiceImpl implements AmcSsoService {
     return true;
   }
 
+  @Override
+  public AmcUser getUserById(Long id) {
+    AmcUser amcUser = amcUserMapper.selectByPrimaryKey(id);
+    amcUser.setPassword(null);
+    return amcUser;
+  }
+
   private void saveJDUsers(List<JDUser> jdUsers) {
     AmcUserExample amcUserExample = new AmcUserExample();
     for (JDUser jdUser : jdUsers) {

@@ -21,10 +21,12 @@ import com.wensheng.sso.module.vo.AmcUserDetail;
 import com.wensheng.sso.service.UserService;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
 import com.wensheng.sso.utils.AmcBeanUtils;
+import com.wensheng.sso.utils.AmcDateUtils;
 import com.wensheng.sso.utils.AmcNumberUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.utils.LoginExceptionUtils;
 import com.wensheng.sso.utils.LoginExceptionUtils.LoginExceptionEnum;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -153,12 +155,24 @@ public class UserServiceImpl implements UserService {
     }
 
     boolean userEnabled = amcUsers.get(0).getValid().equals(AmcUserValidEnum.VALID.getId());
+    boolean isExpired = false;
+    try {
+      if(amcUsers.get(0).getExpireDate().after( AmcDateUtils.getDateFromStr("1901-01-01"))
+          && amcUsers.get(0).getExpireDate().before(AmcDateUtils.getCurrentDate())){
+        userEnabled = false;
+        isExpired = true;
+      }
+    } catch (ParseException e) {
+      log.error("Failed to handle date compare :{}", e);
+    }
 
     if(!userEnabled){
       log.error("user is disabled:{}", inputParam);
       throw new InternalAuthenticationServiceException(String.format("%s",
-          LoginExceptionEnum.USERDISABLED_ERROR.toString() ));
+          LoginExceptionEnum.USERDISABLED_ERROR.toString(), isExpired? "超出账户有效期":""));
     }
+
+
     AmcUserDetail amcUserDetail = new AmcUserDetail(amcUsers.get(0).getMobilePhone(),"",userEnabled, userEnabled,userEnabled,
         userEnabled,grantedAuthorityAuthorities);
     AmcBeanUtils.copyProperties(amcUsers.get(0), amcUserDetail);

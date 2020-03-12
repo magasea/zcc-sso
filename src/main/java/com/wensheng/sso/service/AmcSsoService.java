@@ -1,6 +1,7 @@
 package com.wensheng.sso.service;
 
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
+import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.vo.AmcDeptPermsVo;
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,5 @@ public interface AmcSsoService {
   boolean handleJDList(MultipartFile multipartFile) throws Exception;
   Map<Integer, List<Long>> getAmcRolePerm();
     boolean updateAmcRolePerm(Map<Integer, List<Long>> amcDeptPerms);
+    AmcUser getUserById(Long id);
 }

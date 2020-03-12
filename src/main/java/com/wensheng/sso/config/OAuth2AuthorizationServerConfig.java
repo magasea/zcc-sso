@@ -204,28 +204,28 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         }
 
         @Transactional
-        @CacheEvict
+        @CacheEvict(allEntries = true)
         public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
             super.removeAccessTokenUsingRefreshToken(refreshToken);
         }
 
         @Transactional
-        @CacheEvict
+        @CacheEvict(allEntries = true)
         public void removeAccessTokenUsingRefreshToken(String refreshToken) {
             super.removeAccessTokenUsingRefreshToken(refreshToken);
         }
         @Transactional
-        @CacheEvict
+        @CacheEvict(allEntries = true)
         public void removeAccessToken(OAuth2AccessToken token) {
             super.removeAccessToken(token);
         }
         @Transactional
-        @CacheEvict
+        @CacheEvict(allEntries = true)
         public void removeAccessToken(String tokenValue) {
             super.removeAccessToken(tokenValue);
         }
         @Transactional
-        @CacheEvict
+        @CacheEvict(allEntries = true)
         public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
             super.storeAccessToken(token, authentication);
         }

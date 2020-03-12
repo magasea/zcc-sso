@@ -100,7 +100,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   KafkaService kafkaService;
 
   @Override
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   public void modifyUserRole(Long userId, List<Long> roleIds) {
     AmcUserRoleExample amcUserRoleExample = new AmcUserRoleExample();
     amcUserRoleExample.createCriteria().andUserIdEqualTo(userId);
@@ -127,7 +127,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   @Override
   @AmcUserOpLogger
   @Transactional(rollbackFor = Exception.class)
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   public AmcUser createUser(AmcUser amcUser) throws Exception {
     int cnt = amcUserMapper.insertSelective(amcUser);
     if(cnt > 0){
@@ -236,6 +236,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   }
 
   @Override
+  @Cacheable
   public List<AmcUser> getAllUsers() {
     List<AmcUser> amcUsers =  amcUserMapper.selectByExample(null);
     amcUsers.stream().forEach(amcUser -> amcUser.setPassword(""));
@@ -244,7 +245,7 @@ public class AmcUserServiceImpl implements AmcUserService {
 
   @Override
   @AmcUserOpLogger
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   @Transactional(rollbackFor = Exception.class)
   public boolean userMod(AmcUser amcUser) throws Exception {
     amcUser.setPassword(null);
@@ -267,7 +268,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     return true;
   }
   @Override
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   public boolean updateUserRole(AmcUser amcUser) throws Exception {
     AmcDeptEnum amcDeptEnum = AmcDeptEnum.lookupByDisplayIdUtil(amcUser.getDeptId().intValue());
     AmcSSOTitleEnum amcSSOTitleEnum = AmcSSOTitleEnum.lookupByDisplayIdUtil(amcUser.getTitle());
@@ -419,7 +420,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUserRoleMapper.insertSelective(amcUserRole);
   }
 
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   @Override
   public void modifyUserValidState(Long userId, AmcUserValidEnum amcUserValidEnum) throws Exception{
 
@@ -436,7 +437,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     }
   }
 
-  @CacheEvict
+  @CacheEvict(allEntries = true)
   @Override
   public void modifyUserValidState(Long userId, Long amcId, AmcUserValidEnum amcUserValidEnum) throws Exception {
 
@@ -496,7 +497,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   }
 
   @Override
-  @Cacheable()
+  @Cacheable
   public List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam) {
     AmcUserExample amcUserExample = SQLUtils.getAmcUserExample(queryParam);
     RowBounds rowBounds = new RowBounds(offset, size);

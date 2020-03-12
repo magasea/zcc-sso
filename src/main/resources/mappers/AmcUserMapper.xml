@@ -13,6 +13,7 @@
     <result column="location" jdbcType="INTEGER" property="location" />
     <result column="lgroup" jdbcType="INTEGER" property="lgroup" />
     <result column="valid" jdbcType="INTEGER" property="valid" />
+    <result column="expire_date" jdbcType="TIMESTAMP" property="expireDate" />
     <result column="title" jdbcType="INTEGER" property="title" />
     <result column="nick_name" jdbcType="CHAR" property="nickName" />
     <result column="create_by" jdbcType="BIGINT" property="createBy" />
@@ -80,7 +81,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_name, user_cname, password, mobile_phone, email, dept_id, company_id, location, 
-    lgroup, valid, title, nick_name, create_by, create_date, update_by, update_date
+    lgroup, valid, expire_date, title, nick_name, create_by, create_date, update_by, 
+    update_date
   </sql>
   <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
     select
@@ -120,15 +122,15 @@
     insert into AMC_USER (user_name, user_cname, password, 
       mobile_phone, email, dept_id, 
       company_id, location, lgroup, 
-      valid, title, nick_name, 
-      create_by, create_date, update_by, 
-      update_date)
+      valid, expire_date, title, 
+      nick_name, create_by, create_date, 
+      update_by, update_date)
     values (#{userName,jdbcType=VARCHAR}, #{userCname,jdbcType=CHAR}, #{password,jdbcType=VARCHAR}, 
       #{mobilePhone,jdbcType=CHAR}, #{email,jdbcType=CHAR}, #{deptId,jdbcType=BIGINT}, 
       #{companyId,jdbcType=BIGINT}, #{location,jdbcType=INTEGER}, #{lgroup,jdbcType=INTEGER}, 
-      #{valid,jdbcType=INTEGER}, #{title,jdbcType=INTEGER}, #{nickName,jdbcType=CHAR}, 
-      #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
-      #{updateDate,jdbcType=TIMESTAMP})
+      #{valid,jdbcType=INTEGER}, #{expireDate,jdbcType=TIMESTAMP}, #{title,jdbcType=INTEGER}, 
+      #{nickName,jdbcType=CHAR}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -165,6 +167,9 @@
       </if>
       <if test="valid != null">
         valid,
+      </if>
+      <if test="expireDate != null">
+        expire_date,
       </if>
       <if test="title != null">
         title,
@@ -215,6 +220,9 @@
       </if>
       <if test="valid != null">
         #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="expireDate != null">
+        #{expireDate,jdbcType=TIMESTAMP},
       </if>
       <if test="title != null">
         #{title,jdbcType=INTEGER},
@@ -278,6 +286,9 @@
       <if test="record.valid != null">
         valid = #{record.valid,jdbcType=INTEGER},
       </if>
+      <if test="record.expireDate != null">
+        expire_date = #{record.expireDate,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.title != null">
         title = #{record.title,jdbcType=INTEGER},
       </if>
@@ -314,6 +325,7 @@
       location = #{record.location,jdbcType=INTEGER},
       lgroup = #{record.lgroup,jdbcType=INTEGER},
       valid = #{record.valid,jdbcType=INTEGER},
+      expire_date = #{record.expireDate,jdbcType=TIMESTAMP},
       title = #{record.title,jdbcType=INTEGER},
       nick_name = #{record.nickName,jdbcType=CHAR},
       create_by = #{record.createBy,jdbcType=BIGINT},
@@ -357,6 +369,9 @@
       <if test="valid != null">
         valid = #{valid,jdbcType=INTEGER},
       </if>
+      <if test="expireDate != null">
+        expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      </if>
       <if test="title != null">
         title = #{title,jdbcType=INTEGER},
       </if>
@@ -390,6 +405,7 @@
       location = #{location,jdbcType=INTEGER},
       lgroup = #{lgroup,jdbcType=INTEGER},
       valid = #{valid,jdbcType=INTEGER},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
       title = #{title,jdbcType=INTEGER},
       nick_name = #{nickName,jdbcType=CHAR},
       create_by = #{createBy,jdbcType=BIGINT},

@@ -25,6 +25,8 @@ public class AmcUser {
 
     private Integer valid;
 
+    private Date expireDate;
+
     private Integer title;
 
     private String nickName;
@@ -123,6 +125,14 @@ public class AmcUser {
 
     public void setValid(Integer valid) {
         this.valid = valid;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
     }
 
     public Integer getTitle() {

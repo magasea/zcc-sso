@@ -815,6 +815,66 @@ public class AmcUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andExpireDateIsNull() {
+            addCriterion("expire_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateIsNotNull() {
+            addCriterion("expire_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateEqualTo(Date value) {
+            addCriterion("expire_date =", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotEqualTo(Date value) {
+            addCriterion("expire_date <>", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateGreaterThan(Date value) {
+            addCriterion("expire_date >", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("expire_date >=", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateLessThan(Date value) {
+            addCriterion("expire_date <", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateLessThanOrEqualTo(Date value) {
+            addCriterion("expire_date <=", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateIn(List<Date> values) {
+            addCriterion("expire_date in", values, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotIn(List<Date> values) {
+            addCriterion("expire_date not in", values, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateBetween(Date value1, Date value2) {
+            addCriterion("expire_date between", value1, value2, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotBetween(Date value1, Date value2) {
+            addCriterion("expire_date not between", value1, value2, "expireDate");
+            return (Criteria) this;
+        }
+
         public Criteria andTitleIsNull() {
             addCriterion("title is null");
             return (Criteria) this;
