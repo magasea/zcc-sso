@@ -509,7 +509,9 @@ public class AmcSsoServiceImpl implements AmcSsoService {
   @Override
  @Transactional(rollbackFor = Exception.class)
   public boolean updateAmcRolePerm(Map<Integer, List<Long>> amcDeptPerm) {
+
     AmcRolePermissionExample amcRolePermissionExample = new AmcRolePermissionExample();
+    amcRolePermissionExample.createCriteria().andDeptIdIn(amcDeptPerm.keySet().stream().collect(Collectors.toUnmodifiableList()));
     amcRolePermissionMapper.deleteByExample(amcRolePermissionExample);
 
     if(CollectionUtils.isEmpty(amcDeptPerm)){

@@ -1,0 +1,163 @@
+server:
+    port: 11002
+spring:
+    autoconfigure:
+        exclude:
+            - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+            - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+    datasource:
+        password: ${env.dbpasswd}
+        url: jdbc:mysql://${env.dbhost}:3306/WS_SSO?useUnicode=true&characterEncoding=utf-8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
+        username: ${env.dbusername}
+        driverClassName: com.mysql.cj.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    #    jpa:
+    #        generate-ddl: false
+    #        hibernate:
+    #            ddl-auto: 'none '
+    #            naming:
+    #                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    #        properties:
+    #            hibernate:
+    #                hbm2ddl:
+    #                    auto: none
+    #        show-sql: true
+    security:
+        oauth2:
+            client:
+                registration:
+                    sample:
+                        provider: google
+                        client-id: sampleClientId
+                        authorizedGrantTypes: implicit
+                        scops: read,write
+                        accessTokenValiditySeconds: 3600
+                    amc-client-thirdpart:
+                        provider: google
+                        client-id: amcClient3rdPartId
+                        secret: secret
+                        scopes: thirdpart, read
+                        authorizedGrantTypes: implicit, refresh_token, client_credentials
+                        redirectUris: admin,http://${env.oauth2.host}:10003/amc/login, http://${env.oauth2.host}:8080/login/oauth2/code/custom, http://${env.oauth2.host}:8080/ui-thymeleaf/login/oauth2/code/custom, http://${env.oauth2.host}:8080/authorize/oauth2/code/bael, http://${env.oauth2.host}:8080/login/oauth2/code/bael
+                    amc-admin:
+                        provider: google
+                        client-id: amcAdminId
+                        secret: secret
+                        scopes: amcAdmin,amcClient,read,write
+                        authorizedGrantTypes: password, authorization_code, refresh_token, client_credentials
+                        redirectUris: admin,http://${env.oauth2.host}:10003/amc/login, http://${env.oauth2.host}:8080/login/oauth2/code/custom, http://${env.oauth2.host}:8080/ui-thymeleaf/login/oauth2/code/custom, http://${env.oauth2.host}:8080/authorize/oauth2/code/bael, http://${env.oauth2.host}:8080/login/oauth2/code/bael
+                    amc-client:
+                        provider: google
+                        client-id: amcClientId
+                        secret: secret
+                        scopes: amcClient,read,write
+                        redirectUris: client,http://${env.oauth2.host}:10003/amc/login
+                        authorizedGrantTypes: password, authorization_code, refresh_token, client_credentials
+                provider:
+                    my-oauth-provider:
+                        token-uri: http://${env.oauth2.host}/oauth/token
+
+    kafka:
+        consumer:
+            group-id: grp-sso
+            auto-offset-reset: earliest
+        # change this property if you are using your own
+        # Kafka cluster or your Docker IP is different
+        bootstrap-servers: ${env.kfkhost}:9092
+    cache:
+        cache-names: TOKEN,USER
+        caffeine:
+            spec: maximumSize=500, expireAfterAccess=120s
+
+
+    mail:
+        host: smtp.mxhichina.com
+        port: 25
+        username: chenwei@wenshengamc.com
+        password: Wenhua12345
+        default-encoding: UTF-8
+    task:
+        scheduling:
+            thread-name-prefix: checkExpireToken
+            cronExprTrd: 0 0 6,10,11,12,13,14,15,16,17,18,19,23 * * *
+            cronExprCust: 0 0 7,11,12,13,14,15,16,17,18,19,20,0 * * *
+    messages:
+        encoding: UTF-8
+        basename: locale/message
+    data:
+        mongodb:
+            host: ${env.mongodb-host}
+            port: 27017
+            database: amc_sso
+
+mybatis:
+    type-aliases-package: com.wensheng.sso.module
+    mapper-locations:
+        - classpath:mappers/*Mapper.xml
+        - classpath:mappers/ext/*Mapper.xml
+
+mongodb:
+    #    original:
+    #        host: 10.20.100.235
+    #        port: 27017
+    #        database: wensheng
+    wszcc_sso:
+        host: ${env.mongodb-host}
+        port: 27017
+        database: wszcc_sso
+
+weixin:
+    #    appId: wxdb885be2c95a5b32
+    #    appSecret: 279bfb3dd9d3e5eb43c480f625afdc0b
+    #    get_token_url: https://api.weixin.qq.com/cgi-bin/token
+    #    get_qrcode_url: https://api.weixin.qq.com/wxa/getwxacodeunlimit
+    appId: wx43360e750e7099b9
+    appSecret: e08507e5865fe1315e403d011693253f
+    loginUrl: https://api.weixin.qq.com/sns/jscode2session?appid=${weixin.appId}&secret=${weixin.appSecret}&js_code=JSCODE&grant_type=authorization_code
+    get_token_url: https://api.weixin.qq.com/cgi-bin/token
+    get_qrcode_url: https://api.weixin.qq.com/wxa/getwxacodeunlimit
+    open:
+        appId: wx6d88c0a98ec3d700
+        appSecret: acec37bccfe93dae52390e36a957bd64
+        loginUrl: https://api.weixin.qq.com/sns/oauth2/access_token?appid=${weixin.open.appId}&secret=${weixin.open.appSecret}&code=%s&grant_type=authorization_code
+        getUserInfoUrl: https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=$s
+
+message:
+    url: http://esms100.10690007.net/sms/mt
+    spid: 9346
+    sppassword: xuKh9a8u
+    commond: MT_REQUEST
+    multiCommond: MULTI_MT_REQUEST
+
+kafka:
+    topic_amc_login: topic_amc_userLogin_${env.name}
+
+logging:
+    level:
+        com:
+            wensheng: TRACE
+        root: WARN
+
+env:
+    name: test
+    dbhost: 10.20.100.235
+    dbusername: wsssoworker
+    dbpasswd: Wsamc@12345
+    kfkhost: 10.20.100.235
+    mongodb-host: 10.20.100.235
+    file-repo: /backup/temp
+    oauth2:
+        host: 10.20.100.235
+        authLink: http://${env.oauth2.host}:11002

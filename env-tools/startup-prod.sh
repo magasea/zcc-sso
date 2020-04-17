@@ -25,4 +25,4 @@ echo ${execJarName_sso}
 
 
 sleep 5
-nohup java -jar -Dspring.profiles.active=prod -XX:+UseG1GC -Xms128M -Xmx512M ${execJarName_sso} &>sso.log &
+nohup java -jar -Dspring.profiles.active=preProd -XX:+UseG1GC -Xms128M -Xmx512M ${execJarName_sso} &>sso.log &
