@@ -1,4 +1,4 @@
-# springboot oauth2 security 单点登录中心的深度应用
+# springboot oauth2 security 单点登录中心的应用
 ##  场景
 1. 登录的用户token是general
 2. 各个应用子系统有自己的用户权限角色
