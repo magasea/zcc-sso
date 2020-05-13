@@ -47,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Sort.Direction;
@@ -95,6 +96,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   private String amcAdminClientId;
 
   private final String defaultPasswd = "wensheng";
+  public static final String cacheUserPageKey = "cacheUserPageKey";
 
   @Autowired
   KafkaService kafkaService;
@@ -260,9 +262,9 @@ public class AmcUserServiceImpl implements AmcUserService {
     }
     ssoTokenCheckService.revokenTokenByUserName(mobilePhone);
     amcUser.setMobilePhone(mobilePhone);
-    if(amcUser.getTitle() != historyUser.getTitle() || amcUser.getDeptId() != historyUser.getDeptId() ||
-        amcUser.getLocation() != historyUser.getLocation() || amcUser.getLgroup() != historyUser.getLgroup() ||
-        amcUser.getValid() != historyUser.getValid()){
+    if(!amcUser.getTitle().equals(historyUser.getTitle()) || !amcUser.getDeptId().equals(historyUser.getDeptId()) ||
+        !amcUser.getLocation().equals( historyUser.getLocation()) || !amcUser.getLgroup().equals(historyUser.getLgroup()) ||
+        !amcUser.getValid().equals(historyUser.getValid())){
       kafkaService.send(amcUser);
     }
     return true;
@@ -498,6 +500,7 @@ public class AmcUserServiceImpl implements AmcUserService {
 
   @Override
   @Cacheable
+//  @CachePut( key = "#root.target.cacheUserPageKey")
   public List<AmcUser> queryUserPage(int offset, int size, QueryParam queryParam, Map<String, Direction> orderByParam) {
     AmcUserExample amcUserExample = SQLUtils.getAmcUserExample(queryParam);
     RowBounds rowBounds = new RowBounds(offset, size);

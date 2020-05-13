@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
     if(!userEnabled){
       log.error("user is disabled:{}", inputParam);
       throw new InternalAuthenticationServiceException(String.format("%s",
-          LoginExceptionEnum.USERDISABLED_ERROR.toString(), isExpired? "超出账户有效期":""));
+          LoginExceptionEnum.NOAUTHORITY_ERROR.toString(), isExpired? "超出账户有效期":""));
     }
 
 

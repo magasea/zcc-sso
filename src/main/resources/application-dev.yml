@@ -150,11 +150,11 @@ logging:
 
 env:
     name: dev
-    dbhost: 10.20.100.235
-    dbusername: wsssoworker
-    dbpasswd: Wsamc@12345
-    kfkhost: 10.20.100.235
-    mongodb-host: 10.20.100.235
+    dbhost: 10.20.100.238
+    dbusername: worker
+    dbpasswd: Wensheng@12345678
+    kfkhost: 10.20.100.238
+    mongodb-host: 10.20.100.238
     file-repo: /disk/temp
     oauth2:
         host: localhost

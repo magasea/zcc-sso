@@ -152,12 +152,12 @@ logging:
 
 env:
     name: test
-    dbhost: 10.20.100.235
+    dbhost: 10.20.100.238
     dbusername: wsssoworker
     dbpasswd: Wsamc@12345
-    kfkhost: 10.20.100.235
-    mongodb-host: 10.20.100.235
+    kfkhost: 10.20.100.238
+    mongodb-host: 10.20.100.238
     file-repo: /backup/temp
     oauth2:
-        host: 10.20.100.235
+        host: 10.20.100.238
         authLink: http://${env.oauth2.host}:11002
