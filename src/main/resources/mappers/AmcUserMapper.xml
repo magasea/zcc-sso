@@ -16,6 +16,7 @@
     <result column="expire_date" jdbcType="TIMESTAMP" property="expireDate" />
     <result column="title" jdbcType="INTEGER" property="title" />
     <result column="nick_name" jdbcType="CHAR" property="nickName" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="create_by" jdbcType="BIGINT" property="createBy" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_by" jdbcType="BIGINT" property="updateBy" />
@@ -81,7 +82,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_name, user_cname, password, mobile_phone, email, dept_id, company_id, location, 
-    lgroup, valid, expire_date, title, nick_name, create_by, create_date, update_by, 
+    lgroup, valid, expire_date, title, nick_name, note, create_by, create_date, update_by, 
     update_date
   </sql>
   <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
@@ -123,14 +124,16 @@
       mobile_phone, email, dept_id, 
       company_id, location, lgroup, 
       valid, expire_date, title, 
-      nick_name, create_by, create_date, 
-      update_by, update_date)
+      nick_name, note, create_by, 
+      create_date, update_by, update_date
+      )
     values (#{userName,jdbcType=VARCHAR}, #{userCname,jdbcType=CHAR}, #{password,jdbcType=VARCHAR}, 
       #{mobilePhone,jdbcType=CHAR}, #{email,jdbcType=CHAR}, #{deptId,jdbcType=BIGINT}, 
       #{companyId,jdbcType=BIGINT}, #{location,jdbcType=INTEGER}, #{lgroup,jdbcType=INTEGER}, 
       #{valid,jdbcType=INTEGER}, #{expireDate,jdbcType=TIMESTAMP}, #{title,jdbcType=INTEGER}, 
-      #{nickName,jdbcType=CHAR}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
+      #{nickName,jdbcType=CHAR}, #{note,jdbcType=VARCHAR}, #{createBy,jdbcType=BIGINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -176,6 +179,9 @@
       </if>
       <if test="nickName != null">
         nick_name,
+      </if>
+      <if test="note != null">
+        note,
       </if>
       <if test="createBy != null">
         create_by,
@@ -229,6 +235,9 @@
       </if>
       <if test="nickName != null">
         #{nickName,jdbcType=CHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
       </if>
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
@@ -295,6 +304,9 @@
       <if test="record.nickName != null">
         nick_name = #{record.nickName,jdbcType=CHAR},
       </if>
+      <if test="record.note != null">
+        note = #{record.note,jdbcType=VARCHAR},
+      </if>
       <if test="record.createBy != null">
         create_by = #{record.createBy,jdbcType=BIGINT},
       </if>
@@ -328,6 +340,7 @@
       expire_date = #{record.expireDate,jdbcType=TIMESTAMP},
       title = #{record.title,jdbcType=INTEGER},
       nick_name = #{record.nickName,jdbcType=CHAR},
+      note = #{record.note,jdbcType=VARCHAR},
       create_by = #{record.createBy,jdbcType=BIGINT},
       create_date = #{record.createDate,jdbcType=TIMESTAMP},
       update_by = #{record.updateBy,jdbcType=BIGINT},
@@ -378,6 +391,9 @@
       <if test="nickName != null">
         nick_name = #{nickName,jdbcType=CHAR},
       </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
       <if test="createBy != null">
         create_by = #{createBy,jdbcType=BIGINT},
       </if>
@@ -408,6 +424,7 @@
       expire_date = #{expireDate,jdbcType=TIMESTAMP},
       title = #{title,jdbcType=INTEGER},
       nick_name = #{nickName,jdbcType=CHAR},
+      note = #{note,jdbcType=VARCHAR},
       create_by = #{createBy,jdbcType=BIGINT},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=BIGINT},

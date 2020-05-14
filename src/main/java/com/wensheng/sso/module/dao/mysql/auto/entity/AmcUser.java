@@ -31,6 +31,8 @@ public class AmcUser {
 
     private String nickName;
 
+    private String note;
+
     private Long createBy;
 
     private Date createDate;
@@ -149,6 +151,14 @@ public class AmcUser {
 
     public void setNickName(String nickName) {
         this.nickName = nickName == null ? null : nickName.trim();
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note == null ? null : note.trim();
     }
 
     public Long getCreateBy() {
