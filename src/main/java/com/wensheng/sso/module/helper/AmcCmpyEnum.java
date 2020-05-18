@@ -12,6 +12,7 @@ public enum AmcCmpyEnum {
   CMPY_JIAWO("CMPY_JIAWO","嘉沃", 2),
   CMPY_DINGHUI("CMPY_DINGHUI","鼎晖", 3),
   CMPY_ZHUHAI("CMPY_ZHUHAI","珠海", 4),
+  CMPY_SZAMC("CMPY_SZAMC","苏州资管", 5),
 
   ;
   private String name;
