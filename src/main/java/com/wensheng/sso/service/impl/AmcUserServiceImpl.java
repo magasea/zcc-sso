@@ -14,12 +14,15 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
+import com.wensheng.sso.module.dto.ContactorDTO;
 import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcSpecialUserEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
+import com.wensheng.sso.module.helper.ImagePathClassEnum;
+import com.wensheng.sso.service.AmcOssFileService;
 import com.wensheng.sso.service.AmcUserService;
 import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.util.QueryParam;
@@ -35,6 +38,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,6 +104,9 @@ public class AmcUserServiceImpl implements AmcUserService {
 
   @Autowired
   KafkaService kafkaService;
+
+  @Autowired
+  AmcOssFileService amcOssFileService;
 
   @Override
   @CacheEvict(allEntries = true)
@@ -556,6 +563,69 @@ public class AmcUserServiceImpl implements AmcUserService {
     kafkaService.send(amcUsers.get(0));
     return true;
   }
+
+  @Override
+  @CacheEvict(allEntries = true)
+  public AmcUser uploadContactorImage(String imagePath, String ossPrepath,
+      Long amcDebtContactorId, String imageClassName) throws Exception {
+//    String prePath = ImagePathClassEnum.DEBT.getName() + "/" + debtId + "/";
+    String ossPath = null;
+    try {
+      ossPath = amcOssFileService.handleFile2Oss(imagePath, ossPrepath);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+    AmcUser amcUser = amcUserMapper.selectByPrimaryKey(amcDebtContactorId);
+    if( ImagePathClassEnum.lookupByDisplayNameUtil(imageClassName).getId() == ImagePathClassEnum.CONTACTORIMG.getId()){
+      amcUser.setImgUrl(ossPath);
+    }else if(ImagePathClassEnum.lookupByDisplayNameUtil(imageClassName).getId() == ImagePathClassEnum.CONTACTORWXIMG.getId()){
+      amcUser.setWxImgUrl(ossPath);
+    }
+    amcUserMapper.updateByPrimaryKeySelective(amcUser);
+    return  amcUser;
+
+
+  }
+
+  @Override
+  public void checkContactorNames(List<ContactorDTO> contactorDTOList) {
+    if(CollectionUtils.isEmpty(contactorDTOList)){
+      return;
+    }
+    AmcUserExample amcUserExample = new AmcUserExample();
+    List<String> contactorList = new ArrayList<>(contactorDTOList.stream().map(item->item.getContactorName()).collect(Collectors.toSet()));
+    amcUserExample.createCriteria().andUserCnameIn(contactorList);
+    List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
+    Map<String, AmcUser> amcUsersMap = amcUsers.stream()
+        .collect(Collectors.toMap(item -> item.getUserCname(), item -> item));
+
+
+    for(ContactorDTO contactorDTO: contactorDTOList){
+      if(amcUsersMap.containsKey(contactorDTO.getContactorName())){
+        contactorDTO.setSsoUserId(amcUsersMap.get(contactorDTO.getContactorName()).getId());
+        contactorDTO.setPhoneNum(amcUsersMap.get(contactorDTO.getContactorName()).getMobilePhone());
+        contactorDTO.setFound(true);
+
+      }else{
+        contactorDTO.setFound(false);
+      }
+    }
+    return;
+  }
+
+  @Override
+  public List<AmcUser> getAmcUsersByIds(List<Long> ids) {
+    if(CollectionUtils.isEmpty(ids)){
+      return new ArrayList<>();
+    }
+    AmcUserExample amcUserExample = new AmcUserExample();
+    amcUserExample.createCriteria().andIdIn(ids);
+    List<AmcUser> amcUsers = amcUserMapper.selectByExample(amcUserExample);
+    return amcUsers;
+  }
+
 
   private AmcUser createUserAndRole(AmcUser amcUser) throws Exception {
     if(StringUtils.isEmpty(amcUser.getPassword())){

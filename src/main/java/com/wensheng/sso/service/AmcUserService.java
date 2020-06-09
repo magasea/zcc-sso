@@ -6,6 +6,7 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
+import com.wensheng.sso.module.dto.ContactorDTO;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
 import com.wensheng.sso.service.util.QueryParam;
 import java.util.List;
@@ -67,4 +68,12 @@ public interface AmcUserService {
   public boolean updateUserRole(AmcUser amcUser) throws Exception;
 
   boolean initSysAdmin();
+
+
+  AmcUser uploadContactorImage(String imagePath, String ossPrepath,
+      Long amcDebtContactorId, String imageClassName) throws Exception;
+
+  void checkContactorNames(List<ContactorDTO> contactorDTOList);
+
+  List<AmcUser> getAmcUsersByIds(List<Long> ids);
 }

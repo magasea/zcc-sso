@@ -1,5 +1,11 @@
 server:
     port: 11002
+    tomcat:
+        basedir: ${env.file-repo}
+grpc:
+    enabled: true
+    port: 11012
+    in-process-server-name: amcSSOGrpcServ
 spring:
     autoconfigure:
         exclude:
@@ -101,7 +107,13 @@ spring:
             host: ${env.mongodb-host}
             port: 27017
             database: amc_sso
-
+    servlet:
+        multipart:
+            enabled: true
+            file-size-threshold: 2KB
+            max-file-size: 900MB
+            max-request-size: 900MB
+            location: ${env.file-repo}
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:
@@ -144,6 +156,19 @@ message:
 kafka:
     topic_amc_login: topic_amc_userLogin_${env.name}
 
+project:
+    params:
+        debt_image_path: ${env.file-repo}/${env.name}/debt/images/
+        asset_image_path: ${env.file-repo}/${env.name}/asset/images/
+        sale_image_path: ${env.file-repo}/${env.name}/sale/images/
+        qrcode_image_path: ${env.file-repo}/${env.name}/qrcode/images/
+        oss_end_point: oss-cn-beijing.aliyuncs.com
+        oss_key_id: LTAIr4FuhRp7SciF
+        oss_key_secret: jTtg1M1J39fTJewIwNDNnz09rGeBzC
+        bucket_name: ws-zcc
+        oss_end_point_bak: oss-cn-shanghai.aliyuncs.com
+        bucket_name_bak: ws-zccbak
+
 logging:
     level:
         com:
@@ -157,7 +182,7 @@ env:
     dbpasswd: Wsamc@12345
     kfkhost: 10.20.100.235
     mongodb-host: 10.20.100.235
-    file-repo: /backup/temp
+    file-repo: /home/chenwei/temp
     oauth2:
         host: 10.20.100.235
         authLink: http://${env.oauth2.host}:11002

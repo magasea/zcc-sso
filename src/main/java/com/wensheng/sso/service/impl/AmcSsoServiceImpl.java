@@ -1,28 +1,24 @@
 package com.wensheng.sso.service.impl;
 
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wensheng.sso.dao.mysql.mapper.AmcRolePermissionMapper;
 import com.wensheng.sso.dao.mysql.mapper.AmcUserMapper;
-import com.wensheng.sso.module.dao.mysql.auto.entity.AmcDept;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermission;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcRolePermissionExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
+import com.wensheng.sso.module.helper.AmcPermEnum;
 import com.wensheng.sso.module.helper.AmcSSORolesEnum;
 import com.wensheng.sso.module.helper.AmcSSOTitleEnum;
 import com.wensheng.sso.module.helper.AmcUserValidEnum;
-import com.wensheng.sso.module.vo.AmcDeptPermsVo;
-import com.wensheng.sso.module.vo.DeptPermItem;
 import com.wensheng.sso.service.AmcSsoService;
 import com.wensheng.sso.service.AmcUserService;
 import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.UserService;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
-import io.swagger.models.auth.In;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -152,12 +148,17 @@ public class AmcSsoServiceImpl implements AmcSsoService {
   @Autowired
   TokenEnhancer tokenEnhancer;
 
+
+
   @Autowired
   JwtAccessTokenConverter accessTokenConverter;
 
 
   private DataFormatter dataFormatter = new DataFormatter();
 
+
+  @Value("${env.name}")
+  String envName;
 
   @Value("${env.file-repo}")
   String fileDir;
@@ -537,6 +538,23 @@ public class AmcSsoServiceImpl implements AmcSsoService {
       }
 
     }
+    //公司合作伙伴默认能访问尽调工具
+    amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_PARTNER.getId()));
+    amcRolePermission.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcRolePermission.setPermissionId(Long.valueOf(AmcPermEnum.PERM_JD.getId()));
+    amcRolePermissionMapper.insertSelective(amcRolePermission);
+    amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_LDR.getId()));
+    amcRolePermission.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcRolePermission.setPermissionId(Long.valueOf(AmcPermEnum.PERM_JD.getId()));
+    amcRolePermissionMapper.insertSelective(amcRolePermission);
+    amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_STAFF.getId()));
+    amcRolePermission.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcRolePermission.setPermissionId(Long.valueOf(AmcPermEnum.PERM_JD.getId()));
+    amcRolePermissionMapper.insertSelective(amcRolePermission);
+    amcRolePermission.setRoleId(Long.valueOf(AmcSSORolesEnum.ROLE_SSO_MGR.getId()));
+    amcRolePermission.setDeptId(AmcDeptEnum.OUTSIDE.getId());
+    amcRolePermission.setPermissionId(Long.valueOf(AmcPermEnum.PERM_JD.getId()));
+    amcRolePermissionMapper.insertSelective(amcRolePermission);
     return true;
   }
 
@@ -546,6 +564,11 @@ public class AmcSsoServiceImpl implements AmcSsoService {
     amcUser.setPassword(null);
     return amcUser;
   }
+
+
+
+
+
 
   private void saveJDUsers(List<JDUser> jdUsers) {
     AmcUserExample amcUserExample = new AmcUserExample();

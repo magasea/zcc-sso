@@ -3,7 +3,9 @@ package com.wensheng.sso.controller;
 import com.wensheng.sso.aop.AmcUserCreateChecker;
 import com.wensheng.sso.aop.AmcUserModifyChecker;
 import com.wensheng.sso.module.helper.AmcCmpyEnum;
+import com.wensheng.sso.module.helper.ImagePathClassEnum;
 import com.wensheng.sso.service.AmcEMailService;
+import com.wensheng.sso.service.AmcOssFileService;
 import com.wensheng.sso.service.impl.AmcEmailServiceImpl;
 import com.wensheng.sso.service.util.AmcPage;
 import com.wensheng.sso.service.util.PageReqRepHelper;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -45,6 +48,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author chenwei on 3/14/19
@@ -63,6 +68,9 @@ public class AmcUserController {
 
   @Autowired
   AmcSsoService amcSsoService;
+
+  @Autowired
+  AmcOssFileService amcOssFileService;
 
   @Autowired
   private ConsumerTokenServices tokenServices;
@@ -97,17 +105,15 @@ public class AmcUserController {
   @PreAuthorize("hasAnyRole('SSO_SYS_ADM','SSO_LDR','SSO_MGR')")
   @RequestMapping(value = "/amcid/{amcId}/amc-user/create_amc_user", method = RequestMethod.POST)
   @ResponseBody
-  public String createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
+  public AmcUser createAmcUser(@RequestBody AmcUser amcUser, @PathVariable Long amcId) throws Exception {
     if(null == amcId || amcId < 0){
       amcId = Long.valueOf(AmcCmpyEnum.CMPY_WENSHENG.getId());
     }
     amcUser.setCompanyId(amcId);
     AmcUser amcUserResult = amcUserService.createAmcUser(amcUser);
-    if(amcUserResult == null){
-      return "false";
-    }
 
-    return "succeed";
+
+    return amcUserResult;
   }
 
   @RequestMapping(value = "/amcid/{amcId}/amc-user/amcUsersByPage", method = RequestMethod.POST)
@@ -322,7 +328,67 @@ public class AmcUserController {
     String userCname;
   }
 
+  @RequestMapping(value = "personImage/add", headers = "Content-Type= multipart/form-data",method =
+      RequestMethod.POST)
+  @ResponseBody
+  public AmcUser uploadPersonImage(
+      @RequestParam("userId") Long userId,
+      @RequestParam("images") MultipartFile uploadingImage) throws Exception {
+    if (userId == null || userId < 0) {
+      throw ExceptionUtils.getAmcException(AmcExceptions.MISSING_MUST_PARAM, String.format("userId %s is not valid",
+          userId));
+    }
 
+//    MultipartFile[] uploadingImages = debtImageBaseActionVo.getContent().getMultipartFiles();
+    List<String> filePaths = new ArrayList<>();
+
+    try {
+      String filePath =
+          amcOssFileService.handleMultiPartFile(uploadingImage, userId, ImagePathClassEnum.CONTACTORIMG.getName());
+      filePaths.add(filePath);
+
+      String prePath = amcOssFileService.getAmcUserOssPrePath(ImagePathClassEnum.CONTACTORIMG.getName(), userId);
+
+      return amcUserService.uploadContactorImage(filePath, prePath, userId,
+          ImagePathClassEnum.CONTACTORIMG.getName());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.MULTI_STATUS, e.getStackTrace().toString());
+    }
+
+
+  }
+
+
+  @RequestMapping(value = "wxImage/add", headers = "Content-Type= multipart/form-data",method =
+      RequestMethod.POST)
+  @ResponseBody
+  public AmcUser uploadWXImage(
+      @RequestParam("userId") Long userId,
+      @RequestParam("images") MultipartFile uploadingImage) throws Exception {
+    if (userId == null || userId < 0) {
+      throw ExceptionUtils.getAmcException(AmcExceptions.MISSING_MUST_PARAM, String.format("userId %s is not valid",
+          userId));
+    }
+
+//    MultipartFile[] uploadingImages = debtImageBaseActionVo.getContent().getMultipartFiles();
+    List<String> filePaths = new ArrayList<>();
+
+    try {
+      String filePath = amcOssFileService
+          .handleMultiPartFile(uploadingImage, userId, ImagePathClassEnum.CONTACTORWXIMG.getName());
+      filePaths.add(filePath);
+
+      String prePath = amcOssFileService.getAmcUserOssPrePath(ImagePathClassEnum.CONTACTORWXIMG.getName(), userId);
+
+      return amcUserService.uploadContactorImage(filePath, prePath, userId, ImagePathClassEnum.CONTACTORWXIMG.getName());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.MULTI_STATUS, e.getStackTrace().toString());
+    }
+
+
+  }
 
 
 }

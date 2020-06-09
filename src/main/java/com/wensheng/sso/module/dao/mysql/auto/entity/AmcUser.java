@@ -33,6 +33,14 @@ public class AmcUser {
 
     private String note;
 
+    private String wxImgUrl;
+
+    private String imgUrl;
+
+    private Integer sex;
+
+    private String familyName;
+
     private Long createBy;
 
     private Date createDate;
@@ -159,6 +167,38 @@ public class AmcUser {
 
     public void setNote(String note) {
         this.note = note == null ? null : note.trim();
+    }
+
+    public String getWxImgUrl() {
+        return wxImgUrl;
+    }
+
+    public void setWxImgUrl(String wxImgUrl) {
+        this.wxImgUrl = wxImgUrl == null ? null : wxImgUrl.trim();
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl == null ? null : imgUrl.trim();
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName == null ? null : familyName.trim();
     }
 
     public Long getCreateBy() {

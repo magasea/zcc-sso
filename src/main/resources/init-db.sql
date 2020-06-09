@@ -48,3 +48,4 @@ INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (5,4,3)
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (7,2,2);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (7,3,2);
 INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (7,4,2);
+INSERT INTO AMC_ROLE_PERMISSION( dept_id, role_id, permission_id) VALUES (7,5,2);

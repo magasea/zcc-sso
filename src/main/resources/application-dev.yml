@@ -1,5 +1,11 @@
 server:
     port: 11002
+    tomcat:
+      basedir: ${env.file-repo}
+grpc:
+  enabled: true
+  port: 11012
+  in-process-server-name: amcSSOGrpcServ
 spring:
     autoconfigure:
         exclude:
@@ -7,7 +13,7 @@ spring:
             - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
     datasource:
         password: ${env.dbpasswd}
-        url: jdbc:mysql://${env.dbhost}:3306/WS_SSO?useUnicode=true&characterEncoding=utf-8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
+        url: jdbc:mysql://${env.dbhost}:3306/WS_SSO?useUnicode=yes&characterEncoding=UTF-8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
         username: ${env.dbusername}
         driverClassName: com.mysql.cj.jdbc.Driver
         filters: stat
@@ -107,13 +113,31 @@ spring:
             port: 27017
             database: amc_sso
 
+    servlet:
+      multipart:
+        enabled: true
+        file-size-threshold: 2KB
+        max-file-size: 900MB
+        max-request-size: 900MB
+        location: ${env.file-repo}
 mybatis:
     type-aliases-package: com.wensheng.sso.module
     mapper-locations:
         - classpath:mappers/*Mapper.xml
         - classpath:mappers/ext/*Mapper.xml
 
-
+project:
+  params:
+    debt_image_path: ${env.file-repo}/${env.name}/debt/images/
+    asset_image_path: ${env.file-repo}/${env.name}/asset/images/
+    sale_image_path: ${env.file-repo}/${env.name}/sale/images/
+    qrcode_image_path: ${env.file-repo}/${env.name}/qrcode/images/
+    oss_end_point: oss-cn-beijing.aliyuncs.com
+    oss_key_id: LTAIr4FuhRp7SciF
+    oss_key_secret: jTtg1M1J39fTJewIwNDNnz09rGeBzC
+    bucket_name: ws-zcc
+    oss_end_point_bak: oss-cn-shanghai.aliyuncs.com
+    bucket_name_bak: ws-zccbak
 
 weixin:
 #    appId: wxdb885be2c95a5b32

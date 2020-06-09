@@ -21,4 +21,6 @@ public interface AmcSsoService {
   Map<Integer, List<Long>> getAmcRolePerm();
     boolean updateAmcRolePerm(Map<Integer, List<Long>> amcDeptPerms);
     AmcUser getUserById(Long id);
+
+
 }
