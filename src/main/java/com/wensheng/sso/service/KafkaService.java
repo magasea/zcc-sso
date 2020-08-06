@@ -1,6 +1,7 @@
 package com.wensheng.sso.service;
 
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
+import com.wensheng.sso.module.dto.AmcUserModDto;
 
 /**
  * @author chenwei on 4/1/19
@@ -9,7 +10,7 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 public interface KafkaService {
 
 
-  void send(AmcUser amcUser);
+  void send(AmcUserModDto amcUser);
   void send(String topic, AmcUser amcUser);
 
 }

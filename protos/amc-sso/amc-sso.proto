@@ -34,19 +34,20 @@ message SSOUser{
  string userName = 2;
  string userCname = 3;
  string mobilePhone = 4;
- string email = 5;
- int64 deptId = 6;
- int64 companyId = 7;
- int32 location = 8;
- int32 lgroup = 9;
- int32 valid = 10;
- int32 title = 11;
- string nickName = 12;
- string note = 13;
- string wxImgUrl = 14;
- string imgUrl = 15;
- int32 sex = 16;
- string familyName = 17;
+ string salePhone = 5;
+ string email = 6;
+ int64 deptId = 7;
+ int64 companyId = 8;
+ int32 location = 9;
+ int32 lgroup = 10;
+ int32 valid = 11;
+ int32 title = 12;
+ string nickName = 13;
+ string note = 14;
+ string wxImgUrl = 15;
+ string imgUrl = 16;
+ int32 sex = 17;
+ string familyName = 18;
 
 }
 

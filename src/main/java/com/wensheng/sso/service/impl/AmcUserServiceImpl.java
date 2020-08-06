@@ -14,6 +14,8 @@ import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRole;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserRoleExample;
+import com.wensheng.sso.module.dto.AmcUserDto;
+import com.wensheng.sso.module.dto.AmcUserModDto;
 import com.wensheng.sso.module.dto.ContactorDTO;
 import com.wensheng.sso.module.helper.AmcCmpyEnum;
 import com.wensheng.sso.module.helper.AmcDeptEnum;
@@ -28,17 +30,16 @@ import com.wensheng.sso.service.KafkaService;
 import com.wensheng.sso.service.util.QueryParam;
 import com.wensheng.sso.service.util.UserUtils;
 import com.wensheng.sso.utils.AmcAppPermCheckUtil;
+import com.wensheng.sso.utils.AmcBeanUtils;
 import com.wensheng.sso.utils.AmcDateUtils;
 import com.wensheng.sso.utils.ExceptionUtils;
 import com.wensheng.sso.utils.ExceptionUtils.AmcExceptions;
 import com.wensheng.sso.utils.SQLUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,14 +47,11 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
@@ -259,7 +257,7 @@ public class AmcUserServiceImpl implements AmcUserService {
   public boolean userMod(AmcUser amcUser) throws Exception {
     amcUser.setPassword(null);
     String mobilePhone = amcUser.getMobilePhone();
-    amcUser.setMobilePhone(null);
+//    amcUser.setMobilePhone(null);
     AmcUser historyUser = amcUserMapper.selectByPrimaryKey(amcUser.getId());
 
     amcUserMapper.updateByPrimaryKeySelective(amcUser);
@@ -271,8 +269,15 @@ public class AmcUserServiceImpl implements AmcUserService {
     amcUser.setMobilePhone(mobilePhone);
     if(!amcUser.getTitle().equals(historyUser.getTitle()) || !amcUser.getDeptId().equals(historyUser.getDeptId()) ||
         !amcUser.getLocation().equals( historyUser.getLocation()) || !amcUser.getLgroup().equals(historyUser.getLgroup()) ||
-        !amcUser.getValid().equals(historyUser.getValid())){
-      kafkaService.send(amcUser);
+        !amcUser.getValid().equals(historyUser.getValid())||!amcUser.getMobilePhone().equals(historyUser.getMobilePhone())){
+      AmcUserModDto amcUserModDto = new AmcUserModDto();
+      AmcUserDto amcUserDto = new AmcUserDto();
+      AmcBeanUtils.copyProperties(amcUser, amcUserDto);
+      amcUserModDto.setAmcUserDtoCurr(amcUserDto);
+      AmcUserDto amcUserDtoHis = new AmcUserDto();
+      AmcBeanUtils.copyProperties(historyUser, amcUserDtoHis);
+      amcUserModDto.setAmcUserDtoHis(amcUserDtoHis);
+      kafkaService.send(amcUserModDto);
     }
     return true;
   }
@@ -560,7 +565,9 @@ public class AmcUserServiceImpl implements AmcUserService {
     }
     amcUsers.get(0).setPassword(com.wensheng.sso.utils.UserUtils.getEncode(newPwd));
     amcUserMapper.updateByPrimaryKey(amcUsers.get(0));
-    kafkaService.send(amcUsers.get(0));
+    AmcUserModDto amcUserModDto = new AmcUserModDto();
+    amcUserModDto.setAmcUserDtoCurr((AmcUserDto) amcUsers.get(0));
+    kafkaService.send(amcUserModDto);
     return true;
   }
 
@@ -631,6 +638,7 @@ public class AmcUserServiceImpl implements AmcUserService {
     if(StringUtils.isEmpty(amcUser.getPassword())){
       amcUser.setPassword(defaultPasswd);
     }
+    amcUser.setCreateDate(AmcDateUtils.getCurrentDate());
     amcUser.setPassword(UserUtils.getEncode(amcUser.getPassword()));
     AmcUserExample amcUserExample = new AmcUserExample();
     boolean hasUName = false;
@@ -676,7 +684,12 @@ public class AmcUserServiceImpl implements AmcUserService {
     else{
       amcUserMapper.insertSelective(amcUser);
     }
-    kafkaService.send(amcUser);
+    AmcUserModDto amcUserModDto = new AmcUserModDto();
+
+    amcUserModDto.setAmcUserDtoCurr(new AmcUserDto());
+    AmcBeanUtils.copyProperties(amcUser, amcUserModDto.getAmcUserDtoCurr());
+    amcUserModDto.setAmcUserDtoHis(null);
+    kafkaService.send(amcUserModDto);
 
 //    List<Long> roleIds = new ArrayList<>();
 //    AmcSSORolesEnum amcSSORolesEnum =

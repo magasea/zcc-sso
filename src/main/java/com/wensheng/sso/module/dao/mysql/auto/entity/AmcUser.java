@@ -13,6 +13,8 @@ public class AmcUser {
 
     private String mobilePhone;
 
+    private String salePhone;
+
     private String email;
 
     private Long deptId;
@@ -87,6 +89,14 @@ public class AmcUser {
 
     public void setMobilePhone(String mobilePhone) {
         this.mobilePhone = mobilePhone == null ? null : mobilePhone.trim();
+    }
+
+    public String getSalePhone() {
+        return salePhone;
+    }
+
+    public void setSalePhone(String salePhone) {
+        this.salePhone = salePhone == null ? null : salePhone.trim();
     }
 
     public String getEmail() {

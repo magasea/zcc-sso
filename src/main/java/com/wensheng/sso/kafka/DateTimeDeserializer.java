@@ -5,7 +5,11 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author chenwei on 4/2/19
@@ -13,8 +17,21 @@ import java.time.LocalDateTime;
  */
 public class DateTimeDeserializer implements JsonDeserializer {
 
+  String pattern = "yyyy-MM-dd HH:mm:SS";
+
+  DateFormat df = new SimpleDateFormat(pattern);
+
   @Override
-  public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-    return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString());
+  public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    try {
+      String result = json.getAsJsonPrimitive().getAsString();
+
+      return df.parse(result);
+    } catch (ParseException e) {
+      e.printStackTrace();
+
+    }
+    return null;
   }
+
 }

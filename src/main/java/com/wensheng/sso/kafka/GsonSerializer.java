@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 import org.apache.commons.codec.Charsets;
 import org.apache.kafka.common.serialization.Serializer;
@@ -21,7 +22,7 @@ public class GsonSerializer<T> implements Serializer<T> {
 
   private Gson gson =
       new GsonBuilder().setLongSerializationPolicy(LongSerializationPolicy.DEFAULT).registerTypeAdapter(LocalDateTime.class,
-          new DateTimeSerializer()).create();
+          new DateTimeSerializer()).registerTypeAdapter(Date.class, new DateTimeSerializer()).create();
 
   @Override
   public void configure(Map<String, ?> config, boolean isKey) {

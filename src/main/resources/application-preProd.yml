@@ -176,7 +176,7 @@ logging:
         root: WARN
 
 env:
-    name: test
+    name: prod
     dbhost: 10.20.100.235
     dbusername: wsssoworker
     dbpasswd: Wsamc@12345

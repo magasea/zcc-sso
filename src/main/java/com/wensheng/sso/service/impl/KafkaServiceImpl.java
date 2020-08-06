@@ -4,6 +4,7 @@ import com.wensheng.sso.kafka.KafkaParams;
 import com.wensheng.sso.module.common.WechatUserLocation;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser;
 import com.wensheng.sso.module.dao.mysql.auto.entity.AmcWechatUser;
+import com.wensheng.sso.module.dto.AmcUserModDto;
 import com.wensheng.sso.service.KafkaService;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class KafkaServiceImpl implements KafkaService {
 
 
   @Override
-  public void send(AmcUser amcUser) {
+  public void send(AmcUserModDto amcUser) {
     kafkaTemplate.send(MQ_TOPIC_SSO_USERCHANGED, amcUser);
   }
 

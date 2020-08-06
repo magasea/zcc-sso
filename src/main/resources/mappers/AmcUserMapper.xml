@@ -7,6 +7,7 @@
     <result column="user_cname" jdbcType="CHAR" property="userCname" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="mobile_phone" jdbcType="CHAR" property="mobilePhone" />
+    <result column="sale_phone" jdbcType="CHAR" property="salePhone" />
     <result column="email" jdbcType="CHAR" property="email" />
     <result column="dept_id" jdbcType="BIGINT" property="deptId" />
     <result column="company_id" jdbcType="BIGINT" property="companyId" />
@@ -85,9 +86,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_name, user_cname, password, mobile_phone, email, dept_id, company_id, location, 
-    lgroup, valid, expire_date, title, nick_name, note, wx_img_url, img_url, sex, family_name, 
-    create_by, create_date, update_by, update_date
+    id, user_name, user_cname, password, mobile_phone, sale_phone, email, dept_id, company_id, 
+    location, lgroup, valid, expire_date, title, nick_name, note, wx_img_url, img_url, 
+    sex, family_name, create_by, create_date, update_by, update_date
   </sql>
   <select id="selectByExample" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUserExample" resultMap="BaseResultMap">
     select
@@ -125,21 +126,21 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into AMC_USER (user_name, user_cname, password, 
-      mobile_phone, email, dept_id, 
-      company_id, location, lgroup, 
-      valid, expire_date, title, 
-      nick_name, note, wx_img_url, 
-      img_url, sex, family_name, 
-      create_by, create_date, update_by, 
-      update_date)
+      mobile_phone, sale_phone, email, 
+      dept_id, company_id, location, 
+      lgroup, valid, expire_date, 
+      title, nick_name, note, 
+      wx_img_url, img_url, sex, 
+      family_name, create_by, create_date, 
+      update_by, update_date)
     values (#{userName,jdbcType=VARCHAR}, #{userCname,jdbcType=CHAR}, #{password,jdbcType=VARCHAR}, 
-      #{mobilePhone,jdbcType=CHAR}, #{email,jdbcType=CHAR}, #{deptId,jdbcType=BIGINT}, 
-      #{companyId,jdbcType=BIGINT}, #{location,jdbcType=INTEGER}, #{lgroup,jdbcType=INTEGER}, 
-      #{valid,jdbcType=INTEGER}, #{expireDate,jdbcType=TIMESTAMP}, #{title,jdbcType=INTEGER}, 
-      #{nickName,jdbcType=CHAR}, #{note,jdbcType=VARCHAR}, #{wxImgUrl,jdbcType=VARCHAR}, 
-      #{imgUrl,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{familyName,jdbcType=CHAR}, 
-      #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
-      #{updateDate,jdbcType=TIMESTAMP})
+      #{mobilePhone,jdbcType=CHAR}, #{salePhone,jdbcType=CHAR}, #{email,jdbcType=CHAR}, 
+      #{deptId,jdbcType=BIGINT}, #{companyId,jdbcType=BIGINT}, #{location,jdbcType=INTEGER}, 
+      #{lgroup,jdbcType=INTEGER}, #{valid,jdbcType=INTEGER}, #{expireDate,jdbcType=TIMESTAMP}, 
+      #{title,jdbcType=INTEGER}, #{nickName,jdbcType=CHAR}, #{note,jdbcType=VARCHAR}, 
+      #{wxImgUrl,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{familyName,jdbcType=CHAR}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.wensheng.sso.module.dao.mysql.auto.entity.AmcUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -158,6 +159,9 @@
       </if>
       <if test="mobilePhone != null">
         mobile_phone,
+      </if>
+      <if test="salePhone != null">
+        sale_phone,
       </if>
       <if test="email != null">
         email,
@@ -226,6 +230,9 @@
       </if>
       <if test="mobilePhone != null">
         #{mobilePhone,jdbcType=CHAR},
+      </if>
+      <if test="salePhone != null">
+        #{salePhone,jdbcType=CHAR},
       </if>
       <if test="email != null">
         #{email,jdbcType=CHAR},
@@ -307,6 +314,9 @@
       <if test="record.mobilePhone != null">
         mobile_phone = #{record.mobilePhone,jdbcType=CHAR},
       </if>
+      <if test="record.salePhone != null">
+        sale_phone = #{record.salePhone,jdbcType=CHAR},
+      </if>
       <if test="record.email != null">
         email = #{record.email,jdbcType=CHAR},
       </if>
@@ -373,6 +383,7 @@
       user_cname = #{record.userCname,jdbcType=CHAR},
       password = #{record.password,jdbcType=VARCHAR},
       mobile_phone = #{record.mobilePhone,jdbcType=CHAR},
+      sale_phone = #{record.salePhone,jdbcType=CHAR},
       email = #{record.email,jdbcType=CHAR},
       dept_id = #{record.deptId,jdbcType=BIGINT},
       company_id = #{record.companyId,jdbcType=BIGINT},
@@ -409,6 +420,9 @@
       </if>
       <if test="mobilePhone != null">
         mobile_phone = #{mobilePhone,jdbcType=CHAR},
+      </if>
+      <if test="salePhone != null">
+        sale_phone = #{salePhone,jdbcType=CHAR},
       </if>
       <if test="email != null">
         email = #{email,jdbcType=CHAR},
@@ -473,6 +487,7 @@
       user_cname = #{userCname,jdbcType=CHAR},
       password = #{password,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=CHAR},
+      sale_phone = #{salePhone,jdbcType=CHAR},
       email = #{email,jdbcType=CHAR},
       dept_id = #{deptId,jdbcType=BIGINT},
       company_id = #{companyId,jdbcType=BIGINT},

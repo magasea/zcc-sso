@@ -54,24 +54,5 @@ public class KafkaConfig {
     return new NewTopic(MQ_TOPIC_SSO_USERCHANGED, 3, (short) 1);
   }
 
-  // Consumer configuration
-
-  // If you only need one kind of deserialization, you only need to set the
-  // Consumer configuration properties. Uncomment this and remove all others below.
-//    @Bean
-//    public Map<String, Object> consumerConfigs() {
-//        Map<String, Object> props = new HashMap<>(
-//                kafkaProperties.buildConsumerProperties()
-//        );
-//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-//                StringDeserializer.class);
-//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-//                JsonDeserializer.class);
-//        props.put(ConsumerConfig.GROUP_ID_CONFIG,
-//                "tpd-loggers");
-//
-//        return props;
-//    }
-
 
 }
