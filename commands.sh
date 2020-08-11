@@ -1,3 +1,3 @@
 #!/bin/bash
 cd /home/chenwei/tmp
-mysqldump --compatible=ansi -u wsssoworker -pWsamc@12345 -B WS_SSO > ./wssso-`date +%Y-%m-%d`.sql
+mysqldump --compatible=ansi -u root -pWensheng@123 -B WS_SSO > ./wssso-`date +%Y-%m-%d`.sql
