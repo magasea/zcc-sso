@@ -94,7 +94,7 @@ spring:
         host: smtp.mxhichina.com
         port: 25
         username: chenwei@wenshengamc.com
-        password: Wenhua12345
+        password: ********
         default-encoding: UTF-8
 
     task:
